@@ -10,9 +10,10 @@ public class Anwser : MonoBehaviour {
     {
         correct = c;
         text = t;
+        gameObject.GetComponent<LogControl>().Set(text);
     }
     public void Choose()
-    {
+    { // TODO: Zrobic zmiane kolorow buttona jak jest wybrany;
         if (!chosen)
             chosen = true;
         else

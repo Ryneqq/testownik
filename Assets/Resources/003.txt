@@ -1,0 +1,6 @@
+X1000
+argument liczby e^i wynosi:
+a) 1
+b) 0
+c) pi
+d) -1
