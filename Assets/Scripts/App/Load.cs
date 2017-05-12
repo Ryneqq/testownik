@@ -1,10 +1,33 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class Load : MonoBehaviour
 {
-    TextAsset loaded;
-    // Funkcja liczy ile pytan jest w bazie, slozy do z
+    TextAsset loaded;       // wczytane dane
+    string basePath;        // ścieżka do bazy na androidzie
+
+    void Start()
+    {
+        basePath = Application.persistentDataPath + "/baza/";
+    }
+
+    // ========== Ile pytań jest w bazie ==========
+    // o zadanej ścieżce - na androida
+    public int CountQpath()
+    {
+        for (int i = 1; ; i++)
+        {
+            // Sprawdz czy istnieje plik o zadanej nazwie
+            if (i < 10 && System.IO.File.Exists(basePath + "00" + i.ToString() + ".txt"))
+            { }
+            else if (i < 100 && System.IO.File.Exists(basePath + "0" + i.ToString() + ".txt"))
+            { }
+            else if (i >= 100 && System.IO.File.Exists(basePath + i.ToString() + ".txt"))
+            { }
+            else
+                return i - 1;
+        }
+    }
+    // z folderu Resources - do testowania
     public int CountQ()
     {
         for (int i = 1; ; i++)
@@ -21,7 +44,20 @@ public class Load : MonoBehaviour
                 return i - 1;
         }
     }
-    // Otworz plik o zadanej nazwie i zwroc string z zawartoscia pliku
+    // ============================================
+    // =============== Wczytaj plik ===============
+    // o zadanej ścieżce - na androida
+    public string ReadQpath(string name)
+    {
+        string readed = System.IO.File.ReadAllText(basePath + name + ".txt");
+        if (readed != null)
+        {
+            return readed;
+        }
+        // Jezeli plik jest pusty to zwroc pusty string
+        return string.Empty;
+    }
+    // z folderu Resources - do testowania
     public string ReadQ(string name)
     {
         loaded = Resources.Load<TextAsset>(name);
@@ -32,4 +68,5 @@ public class Load : MonoBehaviour
         // Jezeli plik jest pusty to zwroc pusty string
         return string.Empty;
     }
+    // ============================================
 }
