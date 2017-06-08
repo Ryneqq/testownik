@@ -42,6 +42,7 @@ public class Anwser : MonoBehaviour
             gameObject.GetComponent<Image>().color = Color.white;
         }
     }
+
     // Metoda wywoływana przy określaniu poprawności
     // zwraca int, ponieważ są cztery warianty
     public int Correctness()

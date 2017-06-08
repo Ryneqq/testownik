@@ -1,18 +1,31 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Text;
+using UnityEngine;
 
 public class Load : MonoBehaviour
 {
-    TextAsset loaded;       // wczytane dane
     string basePath;        // ścieżka do bazy na androidzie
+    string savePath;        // ścieżka do pliku z savem
 
-    void Start()
+    public void Setup()
     {
         basePath = Application.persistentDataPath + "/baza/";
+        savePath = Application.persistentDataPath + "/save.txt";
+
+        // zabezpieczenie przed wczytaniem save'a gdyby zmieniono bazy
+        int qs = Count();
+        if(!PlayerPrefs.HasKey("questions")){
+            PlayerPrefs.SetInt("questions", qs);
+        } else { 
+             if(qs != PlayerPrefs.GetInt("questions")){
+                gameObject.GetComponent<Load>().DeleteSave();
+                PlayerPrefs.SetInt("questions", qs);
+             }
+        }
     }
 
     // ========== Ile pytań jest w bazie ==========
-    // o zadanej ścieżce - na androida
-    public int CountQpath()
+    public int Count()
     {
         for (int i = 1; ; i++)
         {
@@ -27,46 +40,54 @@ public class Load : MonoBehaviour
                 return i - 1;
         }
     }
-    // z folderu Resources - do testowania
-    public int CountQ()
+    // ============================================
+
+    // =============== Wczytaj plik ===============
+    public string Read(string name)
     {
-        for (int i = 1; ; i++)
+        string path = basePath + name + ".txt";
+        string read = System.IO.File.ReadAllText(path, Encoding.Default);
+
+        if (read != null)
         {
-            // Otworz plik o zadanej nazwie
-            if(i < 10) 
-                loaded = Resources.Load<TextAsset>("00" + i.ToString());
-            else if (i < 100)
-                loaded = Resources.Load<TextAsset>("0" + i.ToString());
-            else
-                loaded = Resources.Load<TextAsset>(i.ToString());
-            // Jezeli jest pusty to zwroc liczbe otwartych plikow
-            if (loaded == null)
-                return i - 1;
+            return read;
         }
+
+        return string.Empty;
     }
     // ============================================
-    // =============== Wczytaj plik ===============
-    // o zadanej ścieżce - na androida
-    public string ReadQpath(string name)
-    {
-        string readed = System.IO.File.ReadAllText(basePath + name + ".txt");
-        if (readed != null)
-        {
-            return readed;
+
+    // =============== Wczytaj Save =============== 
+    public void DeleteSave(){
+        if(System.IO.File.Exists(savePath)){
+            System.IO.File.Delete(savePath);
         }
-        // Jezeli plik jest pusty to zwroc pusty string
-        return string.Empty;
     }
-    // z folderu Resources - do testowania
-    public string ReadQ(string name)
-    {
-        loaded = Resources.Load<TextAsset>(name);
-        if (loaded != null)
-        {
-            return loaded.text;
+    public bool CheckForSave(){
+        if(System.IO.File.Exists(savePath)){
+            return true;
         }
-        // Jezeli plik jest pusty to zwroc pusty string
-        return string.Empty;
+        return false;
+    }
+    public List<string> StringToList(string read)
+    {
+        List<string> baseQ = new List<string>();
+        string[] contents = read.Split('|');
+        for(int i = 0; i < contents.Length; i++)
+        {
+            baseQ.Add(contents[i]);
+        }
+        return baseQ;
+    }
+    public List<string> LoadSave()
+    {
+        List<string> baseQ = new List<string>();
+        string read = System.IO.File.ReadAllText(savePath);
+        if (read != null)
+        {
+            baseQ = StringToList(read);
+        }
+        return baseQ;
     }
     // ============================================
 }

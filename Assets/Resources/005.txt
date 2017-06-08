@@ -1,5 +1,0 @@
-X0010
- Po³¹czenie szeregowe dwóch bloczków szeregowych da na wyjœciu:
-a) stabilne
-b) niestabilne
-c) nie wiadomo
