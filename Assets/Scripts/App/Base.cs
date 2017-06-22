@@ -14,17 +14,15 @@ public class Base : MonoBehaviour
     private int questions = 0;                          // liczba pytan w bazie
     private Question question;                          // obiekt, którym ustawiamy text, przsyłemy pytania etc.
     private Progress progress;                          // obiekt do wyświetlania stosunku poprawnych odpowiedzi
-    private LogControl check;                           // tekst na guziku 'sprawdz'
-    private bool anwsered = false;                      // bool sprawdzający czy odpowiedziano na pytanie
-    private bool loading = false;                       // bool sprawdza czy wczytujemy dane
+    private Check check;                           // tekst na guziku 'sprawdz'
 
-    void Awake()
+    void Start()
     {
         // wyczyść zmienne statyczne
         Variables.Clear();
 
         question = GameObject.FindGameObjectWithTag("Question").GetComponent<Question>();
-        check = GameObject.FindGameObjectWithTag("Check").GetComponent<LogControl>();
+        check = GameObject.FindGameObjectWithTag("Check").GetComponent<Check>();
         progress = gameObject.GetComponent<Progress>();
 
         gameObject.GetComponent<Load>().Setup();
@@ -37,22 +35,28 @@ public class Base : MonoBehaviour
         }
     }
     private void LoadSave(){
-            loading = true;
             question.Set("Czy chcesz wczytać zapis?");
             question.SetText();
-            question.SpawnYesNo();
-            check.Set("Ok");
+            GetComponent<Spawn>().SpawnYesNo();
+            check.SetText("Ok");
+            check.Saving();
     }
-    private void LoadBase(){
+    public void LoadBase(){
         questions = gameObject.GetComponent<Load>().Count();
         if (questions > 0)
         {
             InitBase();
             SetQuestion();
         } else {
-            question.SetText("Brak pytan!\nUmiesc baze pytan w odpowiednim miejscu na swoim urzadzeniu.");
-            check.Set("Ok");
+            question.SetText("Brak pytań!\nUmieść bazę pytań w odpowiednim miejscu na swoim urządzeniu.");
+            check.SetText("Ok");
         }
+    }
+    public void LoadBase(List<string> b){
+        baseQ = b;
+    }
+    public void SaveBase(){
+        gameObject.GetComponent<Save>().SaveProgress(baseQ);
     }
     // ====================================== Inicjalizacja ======================================
     public string [] SetQueue(string[] Q)
@@ -92,7 +96,8 @@ public class Base : MonoBehaviour
             // zaleta tego rozwiazania jest kolejne sciaganie z listy i nie bawienie sie indeksowaniem
         }
     }
-    public void SetText(string s)
+
+    public void SetText(string s) // to uważam, że powinno się znajdować w skrypcie Question
     {
         gameObject.GetComponent<LogControl>().Set(s); // wyświetlanie nazwy pliku
     }
@@ -101,77 +106,8 @@ public class Base : MonoBehaviour
         return baseQ.Count; // zwraca ilosc pytań na liście
     }
     // ===========================================================================================
-
-    // ====================================== Obsługa guzika ======================================
-    // metoda wywoływana przez 'Ask()'
-    // wywołuje metodę 'Check()' obiektu 'Question' która sprawdza poprawność zazn. odp.
-    // jeżeli odpowiedzi były poprawne, usuwa pytanie z listy, jeżeli nie
-    // to zostanie zadane to samo pytanie
-    public void SetCheckText(string text){
-        check.Set(text);
-    }
-    public void Checked()
-    {
-        //sprawdz czy odpowiedzi byly poprawne
-        if (question.Check() && !Learned())
-        {
-            Variables.correct++;
-            baseQ.RemoveAt(Qs() - 1);
-        }
-        Variables.anwsered++;
-        // wywołaj liczenie stosunku poprawnych odpowiedzi
-        progress.CountPercentage();
-    }
-    public void CheckYesNo(){
-         if(question.IsSave()){
-            if (question.Check())
-                {
-                    gameObject.GetComponent<Save>().SaveProgress(baseQ);
-                }
-                Application.LoadLevel("Menu");
-        } else {
-            if(question.Check())
-            {
-                baseQ = gameObject.GetComponent<Load>().LoadSave();
-            } else {
-                LoadBase();
-            }
-            loading = false;
-            check.Set("Sprawdź");
-            NewQuestion();
-        }
-    }
-    // guzik 'sprawdz' wywoluje te metode
-    public void Ask()
-    {
-        // kliknieto 'sprawdz'
-        if (!anwsered && !question.IsSave() && !loading) 
-        {
-            if(Learned()){
-                Application.LoadLevel("Menu");
-            } else {
-                check.Set("Dalej");
-                anwsered = true;
-                Checked();          // Sprawdz odpowiedz
-            }
-        }
-        else if (question.IsSave() || loading)
-        {
-           CheckYesNo();
-        } 
-        // kliknieto 'dalej'
-        else
-        {
-            check.Set("Sprawdź"); // zmiana napisu na guziku
-            NewQuestion();
-        }
-    }
-    // ============================================================================================
-
+    
     // ====================================== Obsługa pytań ======================================
-    // metoda wywoływana przez naklikniecie guzika 'dalej' w metodzie 'Ask()'
-    // sprawdza za pomocą metody Learned() czy zostały opanowane wszystkie pytania,
-    // jeżeli nie to wywołuje 'SetQuestion'
     public void NewQuestion()
     {
         question.Clear(); // wyczysc stare pytania
@@ -183,10 +119,9 @@ public class Base : MonoBehaviour
             string t = "Wszystkie pytania zostały opanowane";
             question.Set(t);
             question.SetText();
-            check.Set("Ok!");
+            check.SetText("Ok!");
             SetText("fin");
             GameObject.Find("Piwo").GetComponent<Image>().enabled = true;
-            anwsered = false;
         }
     }
     // wywołuje metode obiektu Load i inizcjalizuje pytanie w obiekcie 'Question'
@@ -198,7 +133,10 @@ public class Base : MonoBehaviour
         // wyswietl nazwe otwartego pliku w prawym gornym rogu
         SetText(baseQ[Qs() - 1] + ".txt");
         question.InitQuestion(read);   // przkaz pytanie do obiektu 'Question'
-        anwsered = false;
+    }
+
+    public void RemoveQuestion(){
+        baseQ.RemoveAt(Qs() - 1);
     }
     // sprawdza czy pozostały jakieś pytania na liście pytań 'baseQ'
     public bool Learned()

@@ -1,6 +1,22 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+// Struktura symboliczna
+// analogiczna do klasy Anwser
+// nie dziedziczy po MonoBehaviour w przeciwięstniwie do Anwser
+// dzięki czemu można korzystać z konstruktora
+public struct Ans
+{
+    public bool correct;
+    public string text;
+
+    public Ans(bool c, string t)
+    {
+        text = t;
+        correct = c;
+    }
+};
+
 public class Anwser : MonoBehaviour
 {
     private bool correct;           // czy odpowiedź jest poprawna
@@ -41,6 +57,10 @@ public class Anwser : MonoBehaviour
             chosen = false;
             gameObject.GetComponent<Image>().color = Color.white;
         }
+    }
+
+    public bool Chosen(){
+        return chosen;
     }
 
     // Metoda wywoływana przy określaniu poprawności

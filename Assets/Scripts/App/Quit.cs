@@ -56,7 +56,7 @@ public class Quit : MonoBehaviour {
         question.Turn(true);
         question.Set("Czy chcesz zapisać postęp?");
         question.SetText();
-        question.SpawnYesNo();
+        GetComponent<Spawn>().SpawnYesNo();
         question.IsSave(true);
     }
     private void ResetClick()

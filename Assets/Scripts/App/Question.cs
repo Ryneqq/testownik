@@ -1,34 +1,21 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-// Struktura symboliczna
-// analogiczna do klasy Anwser
-// nie dziedziczy po MonoBehaviour w przeciwięstniwie do Anwser
-// dzięki czemu można korzystać z konstruktora
-public struct Ans
-{
-    public bool correct;
-    public string text;
-
-    public Ans(bool c, string t)
-    {
-        text = t;
-        correct = c;
-    }
-};
-
 // Klasa operuje na pytaniach, wykonywane są tu podstawowe operacje programu takie jak:
 // tworzenie pytań, sprawdzanie poprawności udzielonych odp., usuwanie starych pytań
 public class Question : MonoBehaviour {
 
-    public Button anwser;       // guzik z odpowiedzią
-    public Canvas GameCanvas;   // UI canvas w którym są guziki
     private Ans[] ans;          // tablica odpowiedzi, zawiera info o poprawności i treści
     private int anwsers;        // liczba odpowiedzi
     private string text;        // treść pytania
     private bool save = false;  // jeżeli prawda to zadano pytanie 'Czy chcesz zapisać postęp?' i oznacza zakończenie nauki
+    private Spawn spawn;        // obiekt do spawnowania guzików
+    private Check check;
+    void Awake(){
+        spawn = Camera.main.GetComponent<Spawn>();
+        check = GameObject.FindGameObjectWithTag("Check").GetComponent<Check>();
+    }
  
-
     // ============================== Tworzenie Pytań ==============================
     // Metoda tworzy pytanie,
     // robi substringi z wczytanego stringa oraz odpowiednio je dzieli,
@@ -42,9 +29,9 @@ public class Question : MonoBehaviour {
         {
             if (cut.Length <= 1) // jezeli w pliku jest tylko jedna linijka
             {
-                text = "Uwaga!\nPlik zawieral tylko jedna linijke danych.\nZobacz jak tworzyc pytania w zakladce 'Pomoc'.";
+                text = "Uwaga!\nPlik zawierał tylko jedna linijke danych.\nZobacz jak tworzyć pytania w zakladce 'Pomoc'.";
                 SetText(text);
-                Camera.main.GetComponent<Base>().SetCheckText("Ok");
+                check.SetText("Ok");
                 return;
             }
             text = cut[1];
@@ -72,13 +59,13 @@ public class Question : MonoBehaviour {
             }
 
             Randomize();
-            Spawn();
+            spawn.SpawnAnwsers(ans);
         }
         else
         {
-            text = "Uwaga!\nPytanie powinno zaczynac sie od 'X'.\nZobacz jak tworzyc pytania w zakladce 'Pomoc'.";
+            text = "Uwaga!\nPytanie powinno zaczynać się od 'X'.\nZobacz jak tworzyć pytania w zakładce 'Pomoc'.";
             SetText(text);
-            Camera.main.GetComponent<Base>().SetCheckText("Ok");
+            check.SetText("Ok");
         }
     }
     // Metoda zamienia dane o poprawności z chara na boola
@@ -91,39 +78,6 @@ public class Question : MonoBehaviour {
             return false;
     }
 
-    // Spawnuje jeden guzik
-    public void SpawnAnwser(Ans a, float pos)
-    {
-        Button temp;
-
-        temp = (Button)Instantiate(anwser, new Vector3(0.0f, pos, 0.0f), Quaternion.identity);
-        temp.GetComponent<Anwser>().SetAnwser(a.correct, a.text);
-        temp.transform.SetParent(GameCanvas.transform, false);
-    }
-    // Metoda wywołuje SpawnOne na podstawie tablicy odpowiedzi
-    public void Spawn()
-    {
-        float posY = 650.0f;
-        foreach (Ans a in ans)
-        {
-            SpawnAnwser(a, posY);
-            posY = posY - 400.0f;
-        }
-    }
-    // Metoda spawnuje guziki gdy chcesz wyjść z Nauki
-    public void SpawnYesNo()
-    {
-        Clear();
-        float posY = 650.0f;
-        Ans a = new Ans(true, "Tak");
-        SpawnAnwser(a,posY);
-
-        posY = posY - 400.0f;
-        a = new Ans(false, "Nie");
-        SpawnAnwser(a, posY);
-
-        Camera.main.GetComponent<Base>().SetCheckText("Ok");
-    }
     // Metoda zmienia kolejność pytań na losową
     public void Randomize()
     {
@@ -137,6 +91,9 @@ public class Question : MonoBehaviour {
             ans[k] = temp;
         }
     }
+    // =============================================================================
+
+    // =========================== Napisy na górnym pasku ===========================
     // Setuje zmienna text;
     public void Set(string t){
             text = t;
@@ -151,37 +108,13 @@ public class Question : MonoBehaviour {
     {
         gameObject.GetComponent<LogControl>().Set(s);
     }
-    // =============================================================================
+    // ==============================================================================
 
-    // ==================== Czyszczenie i poprawność ====================
-
+    // ========================== Czyszczenie ===========================
     // Metoda sprawdza poprawność zaznaczonych pytań,
     // odpowiednio ustawia kolor zaznaczonych guzików,
     // oraz blokuje możliwość ich naciśnięcia po wykonaniu metody
-    public bool Check()
-    {
-        GameObject [] ansList = GameObject.FindGameObjectsWithTag("Anwser");
-        bool correct = true;
-        foreach(GameObject a in ansList)
-        {
-            
-            if (a.GetComponent<Anwser>().Correctness() < 3)
-            {
-                correct = false; // zła odpowiedź
-                if (a.GetComponent<Anwser>().Correctness() == 1)
-                    a.GetComponent<Image>().color = Color.green;
-                if (a.GetComponent<Anwser>().Correctness() == 2)
-                    a.GetComponent<Image>().color = Color.red;
-            } else { 
-                if (a.GetComponent<Anwser>().Correctness() == 3)
-                    a.GetComponent<Image>().color = Color.green;
-            }
-            a.GetComponent<Button>().enabled = false;
-        }
-        // gdy wszystkie odpowiedzi są zaznaczone poprawnie to zwróci prawdę,
-        // w każdym innym przypadku będzie false.
-        return correct;
-    }
+
     // Metoda usuwa guziki, wywoływana jest gdy użytkownik chce
     // przejść do następnego pytania
     public void Clear()
