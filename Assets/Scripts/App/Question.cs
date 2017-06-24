@@ -10,7 +10,7 @@ public class Question : MonoBehaviour {
     private string text;        // treść pytania
     private Spawn spawn;        // obiekt do spawnowania guzików
     private Check check;
-    void Awake(){
+    public void Setup(){
         spawn = Camera.main.GetComponent<Spawn>();
         check = GameObject.FindGameObjectWithTag("Check").GetComponent<Check>();
     }

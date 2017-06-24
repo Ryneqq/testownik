@@ -7,16 +7,16 @@ using UnityEngine;
 /// nie jest ona kompatybilna z testownikiem na komputery
 /// progress jest tylko na telefonie
 /// </Save>
-public class Save : MonoBehaviour {
-    private string path;
-    private string fileName = "save.txt";
+public static class Save {
+    private static string path;
+    private static string fileName = "save.txt";
 
-    void Start()
+    public static void Setup()
     {
         path = Application.persistentDataPath + "/" + fileName; // android
     }
 
-    private string ListToString(List<string> baseQ)
+    private static string ListToString(List<string> baseQ)
     {
         string contents = string.Empty;
 
@@ -30,7 +30,7 @@ public class Save : MonoBehaviour {
         return contents;
     }
     
-    public void SaveProgress(List<string> baseQ)
+    public static void SaveProgress(List<string> baseQ)
     {
         string contents = ListToString(baseQ);
 

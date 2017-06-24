@@ -2,17 +2,15 @@
 using System.Text;
 using UnityEngine;
 
-public class Load : MonoBehaviour
+public static class Load
 {
-    string basePath;        // ścieżka do bazy na androidzie
-    string savePath;        // ścieżka do pliku z savem
+    private static string basePath;        // ścieżka do bazy na androidzie
+    private static string savePath;        // ścieżka do pliku z savem
 
-    public void Setup()
+    public static void Setup()
     {
         basePath = Application.persistentDataPath + "/baza/";
         savePath = Application.persistentDataPath + "/save.txt";
-
-        print(savePath);
 
         // zabezpieczenie przed wczytaniem save'a gdyby zmieniono bazy
         int qs = Count();
@@ -20,14 +18,15 @@ public class Load : MonoBehaviour
             PlayerPrefs.SetInt("questions", qs);
         } else { 
              if(qs != PlayerPrefs.GetInt("questions")){
-                gameObject.GetComponent<Load>().DeleteSave();
+                //gameObject.GetComponent<Load>().DeleteSave();
+                DeleteSave();
                 PlayerPrefs.SetInt("questions", qs);
              }
         }
     }
 
     // ========== Ile pytań jest w bazie ==========
-    public int Count()
+    public static int Count()
     {
         for (int i = 1; ; i++)
         {
@@ -45,7 +44,7 @@ public class Load : MonoBehaviour
     // ============================================
 
     // =============== Wczytaj plik ===============
-    public string Read(string name)
+    public static string Read(string name)
     {
         string path = basePath + name + ".txt";
         string read = System.IO.File.ReadAllText(path, Encoding.Default);
@@ -60,18 +59,18 @@ public class Load : MonoBehaviour
     // ============================================
 
     // =============== Wczytaj Save =============== 
-    public void DeleteSave(){
+    private static void DeleteSave(){
         if(System.IO.File.Exists(savePath)){
             System.IO.File.Delete(savePath);
         }
     }
-    public bool CheckForSave(){
+    public static bool CheckForSave(){
         if(System.IO.File.Exists(savePath)){
             return true;
         }
         return false;
     }
-    public List<string> StringToList(string read)
+    private static List<string> StringToList(string read)
     {
         List<string> baseQ = new List<string>();
         string[] contents = read.Split('|');
@@ -81,7 +80,7 @@ public class Load : MonoBehaviour
         }
         return baseQ;
     }
-    public List<string> LoadSave()
+    public static List<string> LoadSave()
     {
         List<string> baseQ = new List<string>();
         string read = System.IO.File.ReadAllText(savePath);

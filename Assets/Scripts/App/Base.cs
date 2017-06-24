@@ -16,7 +16,7 @@ public class Base : MonoBehaviour
     private Progress progress;                          // obiekt do wyświetlania stosunku poprawnych odpowiedzi
     private Check check;                                // tekst na guziku 'sprawdz'
 
-    void Start()
+    void Awake()
     {
         // wyczyść zmienne statyczne
         Variables.Clear();
@@ -25,10 +25,12 @@ public class Base : MonoBehaviour
         check = GameObject.FindGameObjectWithTag("Check").GetComponent<Check>();
         progress = gameObject.GetComponent<Progress>();
 
-        gameObject.GetComponent<Load>().Setup();
+        Load.Setup();
+        Save.Setup();
+        question.Setup();
 
         // sprawdź czy istnieje save
-        if(gameObject.GetComponent<Load>().CheckForSave()){
+        if(Load.CheckForSave()){
             LoadSave();
         } else {
             LoadBase();
@@ -42,7 +44,7 @@ public class Base : MonoBehaviour
             check.Loading();
     }
     public void LoadBase(){
-        questions = gameObject.GetComponent<Load>().Count();
+        questions = Load.Count();
         if (questions > 0)
         {
             InitBase();
@@ -56,7 +58,7 @@ public class Base : MonoBehaviour
         baseQ = b;
     }
     public void SaveBase(){
-        gameObject.GetComponent<Save>().SaveProgress(baseQ);
+        Save.SaveProgress(baseQ);
     }
     // ====================================== Inicjalizacja ======================================
     public string [] SetQueue(string[] Q)
@@ -128,7 +130,7 @@ public class Base : MonoBehaviour
     public void SetQuestion()
     {
         // przeczytaj ostatnie pytanie znajdujace sie na Liscie
-        string read = gameObject.GetComponent<Load>().Read(baseQ[Qs() - 1]);
+        string read = Load.Read(baseQ[Qs() - 1]);
 
         // wyswietl nazwe otwartego pliku w prawym gornym rogu
         SetText(baseQ[Qs() - 1] + ".txt");

@@ -81,7 +81,7 @@ public class Check : MonoBehaviour {
             if(EasyCheck())
             {
                 print("wczytalem save'a");
-                baseObj.LoadBase(Camera.main.GetComponent<Load>().LoadSave());
+                baseObj.LoadBase(Load.LoadSave());
             } else {
                 baseObj.LoadBase();
             }
