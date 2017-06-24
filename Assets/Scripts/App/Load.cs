@@ -12,6 +12,8 @@ public class Load : MonoBehaviour
         basePath = Application.persistentDataPath + "/baza/";
         savePath = Application.persistentDataPath + "/save.txt";
 
+        print(savePath);
+
         // zabezpieczenie przed wczytaniem save'a gdyby zmieniono bazy
         int qs = Count();
         if(!PlayerPrefs.HasKey("questions")){

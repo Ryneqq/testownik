@@ -8,7 +8,6 @@ public class Question : MonoBehaviour {
     private Ans[] ans;          // tablica odpowiedzi, zawiera info o poprawności i treści
     private int anwsers;        // liczba odpowiedzi
     private string text;        // treść pytania
-    private bool save = false;  // jeżeli prawda to zadano pytanie 'Czy chcesz zapisać postęp?' i oznacza zakończenie nauki
     private Spawn spawn;        // obiekt do spawnowania guzików
     private Check check;
     void Awake(){
@@ -136,14 +135,6 @@ public class Question : MonoBehaviour {
         {
             t.GetComponent<Button>().enabled = b;
         }
-    }
-    // czy to nie jest pytanie o zapisanie do pliku
-    public bool IsSave()
-    {
-        return save;
-    }
-    public void IsSave(bool s){
-        save = s;
     }
     // ==================================================================
 }

@@ -14,7 +14,7 @@ public class Base : MonoBehaviour
     private int questions = 0;                          // liczba pytan w bazie
     private Question question;                          // obiekt, którym ustawiamy text, przsyłemy pytania etc.
     private Progress progress;                          // obiekt do wyświetlania stosunku poprawnych odpowiedzi
-    private Check check;                           // tekst na guziku 'sprawdz'
+    private Check check;                                // tekst na guziku 'sprawdz'
 
     void Start()
     {
@@ -39,7 +39,7 @@ public class Base : MonoBehaviour
             question.SetText();
             GetComponent<Spawn>().SpawnYesNo();
             check.SetText("Ok");
-            check.Saving();
+            check.Loading();
     }
     public void LoadBase(){
         questions = gameObject.GetComponent<Load>().Count();

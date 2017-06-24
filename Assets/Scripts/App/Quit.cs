@@ -13,10 +13,12 @@ public class Quit : MonoBehaviour {
     private float resetTime = 1.3f;     // czas resetu naciśniecia guzika
     private Question question;          // obiekt 'Question' do wyświetlania komunikatów, interakcji z użytkownikiem
     private Base b;
+    private Check check;
 
     void Start()
     {
         question = GameObject.FindGameObjectWithTag("Question").GetComponent<Question>();   
+        check = GameObject.FindGameObjectWithTag("Check").GetComponent<Check>();
         b = gameObject.GetComponent<Base>();
     }
     void LateUpdate () {
@@ -56,8 +58,12 @@ public class Quit : MonoBehaviour {
         question.Turn(true);
         question.Set("Czy chcesz zapisać postęp?");
         question.SetText();
+        question.Clear();
+        
         GetComponent<Spawn>().SpawnYesNo();
-        question.IsSave(true);
+
+        check.Saving();
+        check.SetText("Ok");
     }
     private void ResetClick()
     {

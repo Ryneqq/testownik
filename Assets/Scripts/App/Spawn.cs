@@ -36,6 +36,5 @@ public class Spawn : MonoBehaviour {
         posY = posY - 400.0f;
         a = new Ans(false, "Nie");
         SpawnAnwser(a, posY);
-        GameObject.FindGameObjectWithTag("Check").GetComponent<Check>().SetText("Ok");
     }
 }

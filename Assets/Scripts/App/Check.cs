@@ -36,12 +36,7 @@ public class Check : MonoBehaviour {
     }
     public void Clicked()
     {
-        if(loading) {
-            SetText("Ok");
-            CheckYesNo();
-            return;
-        } else if(saving) {
-            SetText("Ok");
+        if(loading || saving) {
             CheckYesNo();
             return;
         }
@@ -74,14 +69,18 @@ public class Check : MonoBehaviour {
     }
     public void CheckYesNo(){
          if(saving){
+            print("zapisuje");             
             if (EasyCheck())
                 {
                    baseObj.SaveBase();
+                   print("zapisano save");
                 }
                 Application.LoadLevel("Menu");
         } else {
+            print("odczytuje");
             if(EasyCheck())
             {
+                print("wczytalem save'a");
                 baseObj.LoadBase(Camera.main.GetComponent<Load>().LoadSave());
             } else {
                 baseObj.LoadBase();
