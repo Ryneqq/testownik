@@ -11,62 +11,55 @@ public class Base : MonoBehaviour
 {
     private List<string> baseQ = new List<string>();    // w liście przetrzymuje tyle tablic Q ile mam ustawionych powtórzen
     private int repetitions = 3;                        // powtórzenia
-    private int questions = 0;                          // liczba pytan w bazie
     private Question question;                          // obiekt, którym ustawiamy text, przsyłemy pytania etc.
-    private Progress progress;                          // obiekt do wyświetlania stosunku poprawnych odpowiedzi
     private Check check;                                // tekst na guziku 'sprawdz'
 
     void Awake()
     {
-        // wyczyść zmienne statyczne
+        // Wyczyść zmienne statyczne, tam znajduje się czas nauki, ilość poprawnych odpowiedzi etc.
         Variables.Clear();
 
         question = GameObject.FindGameObjectWithTag("Question").GetComponent<Question>();
         check = GameObject.FindGameObjectWithTag("Check").GetComponent<Check>();
-        progress = gameObject.GetComponent<Progress>();
 
         Load.Setup();
         Save.Setup();
         question.Setup();
 
-        // sprawdź czy istnieje save
+        // Sprawdź czy istnieje plik 'save.txt'
         if(Load.CheckForSave()){
-            LoadSave();
+            question.Set("Czy chcesz wczytać zapis?");
+            question.SetText();
+            check.SetText("Ok");
+            check.Loading();
+            GetComponent<Spawn>().SpawnYesNo();
         } else {
             LoadBase();
         }
     }
-    private void LoadSave(){
-            question.Set("Czy chcesz wczytać zapis?");
-            question.SetText();
-            GetComponent<Spawn>().SpawnYesNo();
-            check.SetText("Ok");
-            check.Loading();
-    }
-    public void LoadBase(){
-        questions = Load.Count();
-        if (questions > 0)
-        {
-            InitBase();
+    // ===================================== Wczytanie bazy ===================================== 
+    public void LoadBase()
+    {
+        int questions = Load.Count();
+        if (questions > 0){
+            InitBase(questions);
             SetQuestion();
         } else {
             question.SetText("Brak pytań!\nUmieść bazę pytań w odpowiednim miejscu na swoim urządzeniu.");
             check.SetText("Ok");
         }
     }
-    public void LoadBase(List<string> b){
+    public void LoadBase(List<string> b)
+    {
         baseQ = b;
     }
-    public void SaveBase(){
-        Save.SaveProgress(baseQ);
-    }
-    // ====================================== Inicjalizacja ======================================
+    // -------------------------------------- Inicjalizacja ------------------------------------- 
     public string [] SetQueue(string[] Q)
     {
+        int questions = Q.Length;
         int rand;
         string temp;
-        for (int i = 0; i < questions - 1; i++)
-        {
+        for (int i = 0; i < questions - 1; i++){
             rand = Random.Range(i, questions);
             temp = Q[i];
             Q[i] = Q[rand];
@@ -74,11 +67,10 @@ public class Base : MonoBehaviour
         }
         return Q;
     }
-    public void InitBase()
+    public void InitBase(int questions)
     {
         string [] Q = new string[questions];
-        for (int i = 1; i <= questions; i++)
-        {
+        for (int i = 1; i <= questions; i++){
             if (i < 10)
                 Q[i - 1] = "00" + i.ToString();
             else if (i < 100)
@@ -86,35 +78,30 @@ public class Base : MonoBehaviour
             else
                 Q[i - 1]= i.ToString();
         }
+        // Ustawiamy losową kolejność tyle razy ile jest powtórzeń
+        for (int i = 0; i < repetitions; i++){
+            Q = SetQueue(Q);
 
-        for (int i = 0; i < repetitions; i++)
-        {
-            Q = SetQueue(Q); // ustawiamy kolejke tyle razy ile jest powtorzen
-
-            for (int j = 0; j < questions; j++)
-            {
+            for (int j = 0; j < questions; j++){
                 baseQ.Add(Q[j]);
             }
-            // zaleta tego rozwiazania jest kolejne sciaganie z listy i nie bawienie sie indeksowaniem
         }
     }
+    // ===========================================================================================
 
-    public void SetText(string s) // to uważam, że powinno się znajdować w skrypcie Question
+    // ====================================== Zapisanie bazy =====================================
+    // Metoda korzysta z obiektu statycznego Save, którego wykorzystuje do zapisania bazy do pliku
+    public void SaveBase()
     {
-        gameObject.GetComponent<LogControl>().Set(s); // wyświetlanie nazwy pliku
-    }
-    public int Qs()
-    {
-        return baseQ.Count; // zwraca ilosc pytań na liście
+        Save.SaveProgress(baseQ);
     }
     // ===========================================================================================
     
     // ====================================== Obsługa pytań ======================================
     public void NewQuestion()
     {
-        question.Clear(); // wyczysc stare pytania
-        if (!Learned()) // sprawdz czy pytania zostaly opanowane
-        {
+        question.Clear();
+        if (!Learned()){
             SetQuestion();
         } else {
             //uzytkownik opanowal cala baze pytan
@@ -126,26 +113,37 @@ public class Base : MonoBehaviour
             GameObject.Find("Piwo").GetComponent<Image>().enabled = true;
         }
     }
-    // wywołuje metode obiektu Load i inizcjalizuje pytanie w obiekcie 'Question'
+    // Metoda wywołuje ze statycznego obiektu Load metodę do wczytania pliku (kolejnego pytania)
     public void SetQuestion()
     {
-        // przeczytaj ostatnie pytanie znajdujace sie na Liscie
+        // Wczytaj ostatnie pytanie.
         string read = Load.Read(baseQ[Qs() - 1]);
-
-        // wyswietl nazwe otwartego pliku w prawym gornym rogu
+        // Wyświetl nazwe otwartego pliku w prawym gornym rogu.
         SetText(baseQ[Qs() - 1] + ".txt");
-        question.InitQuestion(read);   // przkaz pytanie do obiektu 'Question'
+        // Przekaż pytanie do obiektu 'Question'.
+        question.InitQuestion(read);
     }
-
-    public void RemoveQuestion(){
+    // Metoda do usuwania ostatniego pytania z listy
+    public void RemoveQuestion()
+    {
         baseQ.RemoveAt(Qs() - 1);
     }
-    // sprawdza czy pozostały jakieś pytania na liście pytań 'baseQ'
+    // Metoda sprawdza czy pozostały jakieś pytania na liście pytań 'baseQ'
     public bool Learned()
     {
         if (Qs() > 0)
             return false;
         return true;
+    }
+    // Metoda służy do wyświetlania nazwy aktualnie wczytanego pliku (pytania)
+    public void SetText(string s)
+    {
+        gameObject.GetComponent<LogControl>().Set(s);
+    }
+    // Metoda zwraca ilosc pytań na liście
+    public int Qs()
+    {
+        return baseQ.Count; 
     }
     // ===========================================================================================
 }

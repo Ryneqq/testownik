@@ -59,10 +59,6 @@ public class Anwser : MonoBehaviour
         }
     }
 
-    public bool Chosen(){
-        return chosen;
-    }
-
     // Metoda wywoływana przy określaniu poprawności
     // zwraca int, ponieważ są cztery warianty
     public int Correctness()

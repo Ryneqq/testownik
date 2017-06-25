@@ -5,11 +5,10 @@ using UnityEngine.UI;
 // tworzenie pytań, sprawdzanie poprawności udzielonych odp., usuwanie starych pytań
 public class Question : MonoBehaviour {
 
-    private Ans[] ans;          // tablica odpowiedzi, zawiera info o poprawności i treści
     private int anwsers;        // liczba odpowiedzi
     private string text;        // treść pytania
     private Spawn spawn;        // obiekt do spawnowania guzików
-    private Check check;
+    private Check check;        // obiekt na guziku 'Sprawdź', słóży do ustawiania tekstu
     public void Setup(){
         spawn = Camera.main.GetComponent<Spawn>();
         check = GameObject.FindGameObjectWithTag("Check").GetComponent<Check>();
@@ -19,7 +18,8 @@ public class Question : MonoBehaviour {
     // Metoda tworzy pytanie,
     // robi substringi z wczytanego stringa oraz odpowiednio je dzieli,
     // nastepnie tworzy obiekt typu Ans który jest strukturą podobną do klasy Anwser 
-    // ale nie dziedziczy z MonoBehaviour co pozwala na korzystanie z konstruktora
+    // ale nie dziedziczy z MonoBehaviour co pozwala na korzystanie z konstruktora 
+    // i za każdym razem stworzenie nowego obiektu
     // na koniec wywołuję metody 'Randomize()' i 'Spawn()'
     public void InitQuestion(string read)
     {
@@ -48,7 +48,7 @@ public class Question : MonoBehaviour {
             if (anwsers > 5)
                 anwsers = 5;
 
-            ans = new Ans[anwsers];
+            Ans [] ans = new Ans[anwsers];
             for (int i = 0; i < anwsers; i++)
             {
                 if (cut[0].Length > i + 1)
@@ -57,7 +57,7 @@ public class Question : MonoBehaviour {
                     ans[i] = new Ans(false, cut[i + 2]); //stwierdz ze jest ona nie poprawna
             }
 
-            Randomize();
+            ans = Randomize(ans);
             spawn.SpawnAnwsers(ans);
         }
         else
@@ -67,8 +67,7 @@ public class Question : MonoBehaviour {
             check.SetText("Ok");
         }
     }
-    // Metoda zamienia dane o poprawności z chara na boola
-    // wykorzystywana przez 'InitQuestion()'
+    // Metoda odpowiednie konwertuje chara na boola
     private bool CharToBool(char i)
     {
         if (i == '1')
@@ -78,7 +77,9 @@ public class Question : MonoBehaviour {
     }
 
     // Metoda zmienia kolejność pytań na losową
-    public void Randomize()
+    // IN: tablica z wczytanąa kolejnością pytań
+    // OUT: tablica z losową kolejnością pytań
+    public Ans[] Randomize(Ans[] ans)
     {
         Ans temp;
         int k;
@@ -89,11 +90,12 @@ public class Question : MonoBehaviour {
             ans[i] = ans[k];
             ans[k] = temp;
         }
+        return ans;
     }
     // =============================================================================
 
     // =========================== Napisy na górnym pasku ===========================
-    // Setuje zmienna text;
+    // Metoda słóży do nadpisania zmiennej text, która jest wyświetlana w pasku pytania 
     public void Set(string t){
             text = t;
     }
@@ -102,7 +104,7 @@ public class Question : MonoBehaviour {
     {
         SetText(text);
     }
-    // Metoda edytuje tekst na guziku odpowiedzi
+    // Metoda edytuje tekst na guziku odpowiedzi - zmiana chwilowa
     public void SetText(string s)
     {
         gameObject.GetComponent<LogControl>().Set(s);
@@ -110,12 +112,8 @@ public class Question : MonoBehaviour {
     // ==============================================================================
 
     // ========================== Czyszczenie ===========================
-    // Metoda sprawdza poprawność zaznaczonych pytań,
-    // odpowiednio ustawia kolor zaznaczonych guzików,
-    // oraz blokuje możliwość ich naciśnięcia po wykonaniu metody
-
     // Metoda usuwa guziki, wywoływana jest gdy użytkownik chce
-    // przejść do następnego pytania
+    // przejść do następnego pytania,
     public void Clear()
     {
         GameObject[] temp = GameObject.FindGameObjectsWithTag("Anwser");
@@ -124,11 +122,11 @@ public class Question : MonoBehaviour {
             Destroy(t.gameObject);
         }
     }
-    // Włącz/Wyłącz wszystkie guziki
+    // Włącz/Wyłącz wszystkie guziki w scenie
     public void Turn(bool b)
     {
+        check.GetComponent<Button>().enabled = b;
         gameObject.GetComponent<Button>().enabled = b;
-        GameObject.FindGameObjectWithTag("Check").GetComponent<Button>().enabled = b;
 
         GameObject[] temp = GameObject.FindGameObjectsWithTag("Anwser");
         foreach (GameObject t in temp)

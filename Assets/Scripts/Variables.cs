@@ -12,4 +12,9 @@ public class Variables : MonoBehaviour {
         correct = 0;
         anwsered = 0;
     }
+    public static void Setup(float st, int c, int a){
+        studyTime = st;
+        correct = c;
+        anwsered = a;
+    }
 }

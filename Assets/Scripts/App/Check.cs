@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 ///<summary>
-/// Obiekt opiekujący się obsługą guzika 'Sprawdź'
+/// Obiekt zajmujący się obsługą guzika 'Sprawdź'
+/// Posiada metody do sprawdzania poprawności zaznaczonych odpowiedzi
 ///</summary>
 public class Check : MonoBehaviour {
 	private Base baseObj;
@@ -20,45 +21,8 @@ public class Check : MonoBehaviour {
         progress = Camera.main.GetComponent<Progress>();        
         question = GameObject.FindGameObjectWithTag("Question").GetComponent<Question>();
 	}
-    // ====================================== Obsługa guzika ======================================
-    // metoda wywoływana przez 'Ask()'
-    // wywołuje metodę 'Check()' obiektu 'Question' która sprawdza poprawność zazn. odp.
-    // jeżeli odpowiedzi były poprawne, usuwa pytanie z listy, jeżeli nie
-    // to zostanie zadane to samo pytanie
-    public void SetText(string text){
-        gameObject.GetComponent<LogControl>().Set(text);
-    }
-    public void Saving(){
-        saving = true;
-    }
-    public void Loading(){
-        loading = true;
-    }
-    public void Clicked()
+    public void CheckAnwsers()
     {
-        if(loading || saving) {
-            CheckYesNo();
-            return;
-        }
-
-        if (!anwsered)
-        {
-            if(baseObj.Learned()){
-                Application.LoadLevel("Menu");
-            } else {
-				anwsered = true;
-                SetText("Dalej");
-                Checked();          // Sprawdzono odpowiedź
-            }
-        } else {
-            SetText("Sprawdź");
-            baseObj.NewQuestion();
-            anwsered = false;
-        }
-    }
-    public void Checked()
-    {
-        //sprawdz czy odpowiedzi byly poprawne
         if (CheckCorectness())
         {
             Variables.correct++;
@@ -68,19 +32,15 @@ public class Check : MonoBehaviour {
         progress.CountPercentage();
     }
     public void CheckYesNo(){
-         if(saving){
-            print("zapisuje");             
+         if(saving){           
             if (EasyCheck())
                 {
                    baseObj.SaveBase();
-                   print("zapisano save");
                 }
                 Application.LoadLevel("Menu");
         } else {
-            print("odczytuje");
             if(EasyCheck())
             {
-                print("wczytalem save'a");
                 baseObj.LoadBase(Load.LoadSave());
             } else {
                 baseObj.LoadBase();
@@ -89,6 +49,28 @@ public class Check : MonoBehaviour {
             saving = false;
             SetText("Sprawdź");
             baseObj.NewQuestion();
+        }
+    }
+    // metoda wywoływana przez guzik 'Sprawdź'
+    public void Clicked()
+    {
+        if(loading || saving) {
+            CheckYesNo();
+            return;
+        }
+
+        if (!anwsered) {
+            if(baseObj.Learned()){
+                Application.LoadLevel("Menu");
+            } else {
+				anwsered = true;
+                SetText("Dalej");
+                CheckAnwsers();
+            }
+        } else {
+            SetText("Sprawdź");
+            baseObj.NewQuestion();
+            anwsered = false;
         }
     }
     public bool CheckCorectness()
@@ -111,8 +93,8 @@ public class Check : MonoBehaviour {
             }
             a.GetComponent<Button>().enabled = false;
         }
-        // gdy wszystkie odpowiedzi są zaznaczone poprawnie to zwróci prawdę,
-        // w każdym innym przypadku będzie false.
+        // Gdy wszystkie odpowiedzi są zaznaczone poprawnie to zwróci prawdę.
+        // W każdym innym przypadku będzie false.
         return correct;
     }
     public bool EasyCheck()
@@ -129,5 +111,13 @@ public class Check : MonoBehaviour {
         }
         return correct;
     }
-    // ============================================================================================
+    public void Saving(){
+        saving = true;
+    }
+    public void Loading(){
+        loading = true;
+    }
+    public void SetText(string text){
+        gameObject.GetComponent<LogControl>().Set(text);
+    }
 }
