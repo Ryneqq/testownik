@@ -9,7 +9,6 @@ using UnityEngine.UI;
 ///</summary>
 public class Check : MonoBehaviour {
 	private Base baseObj;
-	private Question question;
 	private Progress progress;
 	private bool anwsered = false; 
     private bool loading= false;
@@ -19,8 +18,29 @@ public class Check : MonoBehaviour {
 	void Awake(){
 		baseObj = Camera.main.GetComponent<Base>();
         progress = Camera.main.GetComponent<Progress>();        
-        question = GameObject.FindGameObjectWithTag("Question").GetComponent<Question>();
 	}
+    // Metoda wywoływana przez guzik 'Sprawdź'
+    public void Clicked()
+    {
+        if(loading || saving) {
+            CheckYesNo();
+            return;
+        }
+
+        if (!anwsered) {
+            if(baseObj.Learned()){
+                Application.LoadLevel("Menu");
+            } else {
+				anwsered = true;
+                SetText("Dalej");
+                CheckAnwsers();
+            }
+        } else {
+            SetText("Sprawdź");
+            baseObj.NewQuestion();
+            anwsered = false;
+        }
+    }
     public void CheckAnwsers()
     {
         if (CheckCorectness())
@@ -49,28 +69,6 @@ public class Check : MonoBehaviour {
             saving = false;
             SetText("Sprawdź");
             baseObj.NewQuestion();
-        }
-    }
-    // metoda wywoływana przez guzik 'Sprawdź'
-    public void Clicked()
-    {
-        if(loading || saving) {
-            CheckYesNo();
-            return;
-        }
-
-        if (!anwsered) {
-            if(baseObj.Learned()){
-                Application.LoadLevel("Menu");
-            } else {
-				anwsered = true;
-                SetText("Dalej");
-                CheckAnwsers();
-            }
-        } else {
-            SetText("Sprawdź");
-            baseObj.NewQuestion();
-            anwsered = false;
         }
     }
     public bool CheckCorectness()
