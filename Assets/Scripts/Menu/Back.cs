@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Back : MonoBehaviour {
 
-	void LateUpdate () {
-			if (Input.GetKey(KeyCode.Escape))
-			{
-				Application.LoadLevel("Menu");
-			}
-	}
+    void LateUpdate () {
+            if (Input.GetKey(KeyCode.Escape))
+            {
+                Application.LoadLevel("Menu");
+            }
+    }
 }

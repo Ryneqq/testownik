@@ -5,6 +5,8 @@ using UnityEngine.UI;
 // tworzenie pytań, sprawdzanie poprawności udzielonych odp., usuwanie starych pytań
 public class Question : MonoBehaviour {
 
+    const string ERROR_MESSAGE_FILE_TO_SHORT = "Uwaga!\nPlik zawierał tylko jedna linijke danych.\nZobacz jak tworzyć pytania w zakladce 'Pomoc'.";
+    const string ERROR_MESSAGE_WRONG_FORMAT = "Uwaga!\nPytanie powinno zaczynać się od 'X'.\nZobacz jak tworzyć pytania w zakładce 'Pomoc'.";
     private int anwsers;        // liczba odpowiedzi
     private string text;        // treść pytania
     private Spawn spawn;        // obiekt do spawnowania guzików
@@ -23,18 +25,16 @@ public class Question : MonoBehaviour {
     // na koniec wywołuję metody 'Randomize()' i 'Spawn()'
     public void InitQuestion(string read)
     {
-        string[] cut = read.Split('\n');
+        var cut = read.Split('\n');
         if (cut[0] != string.Empty && cut[0][0] == 'X')
         {
             if (cut.Length <= 1) // jezeli w pliku jest tylko jedna linijka
             {
-                text = "Uwaga!\nPlik zawierał tylko jedna linijke danych.\nZobacz jak tworzyć pytania w zakladce 'Pomoc'.";
-                SetText(text);
-                check.SetText("Ok");
+                ErrorOccured(ERROR_MESSAGE_FILE_TO_SHORT);
                 return;
             }
             text = cut[1];
-            SetText(text);     // wyswietl pytanie
+            SetQuestionLabel(text);     // wyswietl pytanie
             anwsers = cut.Length - 2; // liczba pytan w pliku
 
             //usun bledne koncowki (entery)
@@ -62,18 +62,18 @@ public class Question : MonoBehaviour {
         }
         else
         {
-            text = "Uwaga!\nPytanie powinno zaczynać się od 'X'.\nZobacz jak tworzyć pytania w zakładce 'Pomoc'.";
-            SetText(text);
-            check.SetText("Ok");
+            ErrorOccured(ERROR_MESSAGE_WRONG_FORMAT);
         }
     }
     // Metoda odpowiednie konwertuje chara na boola
     private bool CharToBool(char i)
     {
-        if (i == '1')
-            return true;
-        else
-            return false;
+        return i == '1';
+    }
+
+    private void ErrorOccured(string message) {
+        SetQuestionLabel(message);
+        check.SetText("Ok");
     }
 
     // Metoda zmienia kolejność pytań na losową
@@ -96,16 +96,17 @@ public class Question : MonoBehaviour {
 
     // =========================== Napisy na górnym pasku ===========================
     // Metoda słóży do nadpisania zmiennej text, która jest wyświetlana w pasku pytania 
-    public void Set(string t){
-            text = t;
+    public void SetQuestionValue(string t){
+        text = t;
+        SetQuestionLabel(text);
     }
     // Metoda wpisuje text pytania gdy chcesz przywrócić treść zmiennej 'text'
-    public void SetText()
+    public void ResetQuestionValue()
     {
-        SetText(text);
+        SetQuestionLabel(text);
     }
     // Metoda edytuje tekst na guziku odpowiedzi - zmiana chwilowa
-    public void SetText(string s)
+    public void SetQuestionLabel(string s)
     {
         gameObject.GetComponent<LogControl>().Set(s);
     }

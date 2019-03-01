@@ -50,14 +50,13 @@ public class Quit : MonoBehaviour {
     private void ClickedOnce()
     {
         clicked = true;
-        question.SetText("Naciśnij wstecz by wyjść");
+        question.SetQuestionLabel("Naciśnij wstecz by wyjść");
         question.Turn(false);
     }
     public void ClickedTwice()
     {
         question.Turn(true);
-        question.Set("Czy chcesz zapisać postęp?");
-        question.SetText();
+        question.SetQuestionValue("Czy chcesz zapisać postęp?");
         question.Clear();
         
         GetComponent<Spawn>().SpawnYesNo();
@@ -69,7 +68,7 @@ public class Quit : MonoBehaviour {
     {
         time = 0.0f;
         clicked = false;
-        question.SetText();
+        question.ResetQuestionValue();
         question.Turn(true);
     }
 }

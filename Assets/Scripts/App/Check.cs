@@ -8,18 +8,18 @@ using UnityEngine.UI;
 /// Posiada metody do sprawdzania poprawności zaznaczonych odpowiedzi
 ///</summary>
 public class Check : MonoBehaviour {
-	private Base baseObj;
-	private Progress progress;
-	private bool anwsered = false; 
+    private Base baseObj;
+    private Progress progress;
+    private bool anwsered = false; 
     private bool loading= false;
     private bool saving = false;
 
 
 	void Awake(){
 		baseObj = Camera.main.GetComponent<Base>();
-        progress = Camera.main.GetComponent<Progress>();        
+        progress = Camera.main.GetComponent<Progress>();
 	}
-    // Metoda wywoływana przez guzik 'Sprawdź'
+
     public void Clicked()
     {
         if(loading || saving) {
@@ -31,7 +31,7 @@ public class Check : MonoBehaviour {
             if(baseObj.Learned()){
                 Application.LoadLevel("Menu");
             } else {
-				anwsered = true;
+                anwsered = true;
                 SetText("Dalej");
                 CheckAnwsers();
             }
@@ -53,13 +53,13 @@ public class Check : MonoBehaviour {
     }
     public void CheckYesNo(){
          if(saving){           
-            if (EasyCheck())
+            if (SimpleCheck())
                 {
                    baseObj.SaveBase();
                 }
                 Application.LoadLevel("Menu");
         } else {
-            if(EasyCheck())
+            if(SimpleCheck())
             {
                 baseObj.LoadBase(Load.LoadSave());
             } else {
@@ -95,13 +95,13 @@ public class Check : MonoBehaviour {
         // W każdym innym przypadku będzie false.
         return correct;
     }
-    public bool EasyCheck()
+
+    public bool SimpleCheck()
     {
         GameObject [] ansList = GameObject.FindGameObjectsWithTag("Anwser");
         bool correct = true;
         foreach(GameObject a in ansList)
         {
-            
             if (a.GetComponent<Anwser>().Correctness() < 3)
             {
                 correct = false; // zła odpowiedź
@@ -109,6 +109,7 @@ public class Check : MonoBehaviour {
         }
         return correct;
     }
+
     public void Saving(){
         saving = true;
     }

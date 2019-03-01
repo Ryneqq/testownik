@@ -65,7 +65,7 @@ public class Progress : MonoBehaviour {
         {
             // unclicked
             clicked = false;
-            question.SetText();
+            question.ResetQuestionValue();
         }
     }
 
@@ -130,6 +130,6 @@ public class Progress : MonoBehaviour {
         text += "Czas nauki: " + FormatTime(Variables.studyTime) + "\n\r";
         text += "Odpowiedzi: " + Variables.anwsered + "\n\r";
         text += "Poprawne: " + Variables.correct;
-        question.SetText(text);
+        question.SetQuestionLabel(text);
     }
 }
