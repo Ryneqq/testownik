@@ -22,8 +22,8 @@ public static class Save {
 
         for (int i = 0; i < baseQ.Count; i++)
         {
-            if(i!=0)
-                contents +="|";
+            if(i != 0)
+                contents += "|";
             contents += baseQ[i];
             
         }
