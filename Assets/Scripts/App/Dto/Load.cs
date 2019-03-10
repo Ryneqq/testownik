@@ -12,7 +12,7 @@ public static class Load
         basePath = Application.persistentDataPath + "/baza/";
         savePath = Application.persistentDataPath + "/save.txt";
 
-        Debug.Log(basePath);
+        Debug.Log("Here: '" + basePath + "', put your folder 'baza' with question inside it");
 
         // Tu mozna wygenerowac hasha z nazw plikow w celu zabezpieczenia save'a
 
