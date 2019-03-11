@@ -18,16 +18,16 @@ public class QuestionDto {
         return correct_anwsers.Length + incorrect_anwsers.Length;
     }
 
-    public Ans[] GetAnwsers()
+    public AnserDto[] GetAnwsers()
     {
-        var anwsers = new List<Ans>();
+        var anwsers = new List<AnserDto>();
         foreach (var anwser in this.correct_anwsers)
         {
-            anwsers.Add(new Ans(true, anwser));
+            anwsers.Add(new AnserDto(true, anwser));
         }
         foreach (var anwser in this.incorrect_anwsers)
         {
-            anwsers.Add(new Ans(false, anwser));
+            anwsers.Add(new AnserDto(false, anwser));
         }
 
         return anwsers.ToArray();

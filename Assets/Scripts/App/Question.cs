@@ -22,7 +22,7 @@ public class Question : MonoBehaviour {
             this.SetQuestionValue(questionDto.question);
             this.SetNumberOfAnwsers(questionDto.AnwsersCount());
             this.spawn.SpawnAnwsers(this.Randomize(questionDto.GetAnwsers()));
-            
+
         }
         catch (System.FormatException ex)
         {
@@ -39,17 +39,18 @@ public class Question : MonoBehaviour {
         check.SetText("Ok");
     }
 
-    public Ans[] Randomize(Ans[] ans)
+    public AnserDto[] Randomize(AnserDto[] ans)
     {
-        Ans temp;
-        int k;
+        AnserDto temp;
+
         for (int i = 0; i < anwsersCount - 1; i++)
         {
-            k = Random.Range(1, anwsersCount);
+            var rand = Random.Range(1, anwsersCount);
             temp = ans[i];
-            ans[i] = ans[k];
-            ans[k] = temp;
+            ans[i] = ans[rand];
+            ans[rand] = temp;
         }
+
         return ans;
     }
 

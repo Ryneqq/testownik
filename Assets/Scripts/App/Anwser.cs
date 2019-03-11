@@ -1,16 +1,17 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-// Struktura symboliczna
-// analogiczna do klasy Anwser
-// nie dziedziczy po MonoBehaviour w przeciwięstniwie do Anwser
-// dzięki czemu można korzystać z konstruktora
-public struct Ans
+public enum PossibleAnwsers
+{
+    correctChosen, incorrectChosen, correctNotChosen, incorrectNotChosen
+}
+
+public struct AnserDto
 {
     public bool correct;
     public string text;
 
-    public Ans(bool c, string t)
+    public AnserDto(bool c, string t)
     {
         text = t;
         correct = c;
@@ -20,33 +21,10 @@ public struct Ans
 public class Anwser : MonoBehaviour
 {
     private bool correct;           // czy odpowiedź jest poprawna
-    private string text;            // treść odpowiedzi
-
     private bool chosen = false;    // czy ta odpowiedź została zaznaczona przez użytkownika
 
-    // ============== Ustaw odpowiedź ==============
-
-    // nadaj wartości odpowiedzi
-    public void SetAnwser(bool c, string t)
-    {
-        correct = c;
-        text = t;
-        SetText(text);
-    }
-    // zmień tekst na guziku odpowiedzi
-    public void SetText(string s)
-    {
-        gameObject.GetComponent<LogControl>().Set(s);
-    }
-
-    // ==============================================
-
-    // ============== Zarządzaj odpowiedzią ==============
-
-    // Metoda wywoływana kliknięciem guzika na daną odpowiedź
-    // zmienia kolor guzika i pamięta czy był wybrany czy nie
     public void Choose()
-    { 
+    {
         if (!chosen)
         {
             chosen = true;
@@ -59,19 +37,34 @@ public class Anwser : MonoBehaviour
         }
     }
 
-    // Metoda wywoływana przy określaniu poprawności
-    // zwraca int, ponieważ są cztery warianty
-    public int Correctness()
+    public void SetAnwser(bool c, string t)
     {
-        if (!chosen && correct) // wybrany zly
-            return 1;
-        else if (chosen && !correct) // nie wybrany dobry
-            return 2;
-        else if (chosen && correct) // wybrany dobry
-            return 3;
-        else // nie wybrany zly
-            return 4;
+        this.correct = c;
+        this.SetText(t);
     }
 
-    // ===================================================
+    public void SetText(string s)
+    {
+        gameObject.GetComponent<LogControl>().Set(s);
+    }
+
+    public bool IncorrectAnwser()
+    {
+        var correctness = Correctness();
+
+        return correctness != PossibleAnwsers.correctChosen
+            && correctness != PossibleAnwsers.incorrectNotChosen;
+    }
+
+    public PossibleAnwsers Correctness()
+    {
+        if (!this.chosen && this.correct)
+            return PossibleAnwsers.correctNotChosen;
+        else if (this.chosen && !this.correct)
+            return PossibleAnwsers.incorrectChosen;
+        else if (this.chosen && this.correct)
+            return PossibleAnwsers.correctChosen;
+        else
+            return PossibleAnwsers.incorrectNotChosen;
+    }
 }

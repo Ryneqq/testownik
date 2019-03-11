@@ -20,7 +20,7 @@ public static class Load
         int qs = Count();
         if(!PlayerPrefs.HasKey("questions")){
             PlayerPrefs.SetInt("questions", qs);
-        } else { 
+        } else {
              if(qs != PlayerPrefs.GetInt("questions")){
                 DeleteSave();
                 PlayerPrefs.SetInt("questions", qs);
@@ -30,7 +30,7 @@ public static class Load
 
     public static int Count()
     {
-        return System.IO.Directory.GetFiles(basePath).GetLength(0);
+        return System.IO.Directory.GetFiles(basePath).Length;
     }
 
     public static string Read(string path)
