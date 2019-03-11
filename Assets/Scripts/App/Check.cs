@@ -3,42 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-///<summary>
-/// Obiekt zajmujący się obsługą guzika 'Sprawdź'
-/// Posiada metody do sprawdzania poprawności zaznaczonych odpowiedzi
-///</summary>
 public class Check : MonoBehaviour {
     private Base baseObj;
     private Progress progress;
-    private bool anwsered = false; 
+    private bool anwsered = false;
     private bool loading= false;
     private bool saving = false;
 
 
-	void Awake(){
-		baseObj = Camera.main.GetComponent<Base>();
+    void Awake(){
+        baseObj  = Camera.main.GetComponent<Base>();
         progress = Camera.main.GetComponent<Progress>();
-	}
+    }
 
     public void Clicked()
     {
-        if(loading || saving) {
+        if(this.loading || this.saving) {
             CheckYesNo();
             return;
         }
 
-        if (!anwsered) {
-            if(baseObj.Learned()){
+        if (!this.anwsered) {
+            if(baseObj.Learned())
+            {
                 Application.LoadLevel("Menu");
             } else {
-                anwsered = true;
-                SetText("Dalej");
-                CheckAnwsers();
+                this.anwsered = true;
+                this.SetText("Dalej");
+                this.CheckAnwsers();
             }
         } else {
-            SetText("Sprawdź");
-            baseObj.NewQuestion();
-            anwsered = false;
+            this.SetText("Sprawdź");
+            this.baseObj.NewQuestion();
+            this.anwsered = false;
         }
     }
     public void CheckAnwsers()
@@ -46,65 +43,86 @@ public class Check : MonoBehaviour {
         if (CheckCorectness())
         {
             Variables.correct++;
-            baseObj.RemoveQuestion();
+            this.baseObj.RemoveQuestion();
         }
+
         Variables.anwsered++;
-        progress.CountPercentage();
+        this.progress.CountPercentage();
     }
-    public void CheckYesNo(){
-         if(saving){           
-            if (SimpleCheck())
-                {
-                   baseObj.SaveBase();
-                }
-                Application.LoadLevel("Menu");
-        } else {
-            if(SimpleCheck())
+
+    private void CheckYesNo(){
+         if(this.saving)
+         {
+            if (CheckCorrectnessSimple())
+            {
+                baseObj.SaveBase();
+            }
+
+            Application.LoadLevel("Menu");
+        }
+        else
+        {
+            if(CheckCorrectnessSimple())
             {
                 baseObj.LoadBase(Load.LoadSave());
-            } else {
+            }
+            else
+            {
                 baseObj.LoadBase();
             }
-            loading = false;
-            saving = false;
-            SetText("Sprawdź");
-            baseObj.NewQuestion();
+
+            this.loading = false;
+            this.saving = false;
+            this.SetText("Sprawdź");
+            this.baseObj.NewQuestion();
         }
     }
-    public bool CheckCorectness()
+
+    private bool CheckCorectness()
     {
         GameObject [] ansList = GameObject.FindGameObjectsWithTag("Anwser");
         bool correct = true;
+
         foreach(GameObject a in ansList)
         {
-            
-            if (a.GetComponent<Anwser>().Correctness() < 3)
+            var anwser = a.GetComponent<Anwser>();
+            var image  = a.GetComponent<Image>();
+            var button = a.GetComponent<Button>();
+
+            if (anwser.IncorrectAnwser())
             {
-                correct = false; // zła odpowiedź
-                if (a.GetComponent<Anwser>().Correctness() == 1)
-                    a.GetComponent<Image>().color = Color.green;
-                if (a.GetComponent<Anwser>().Correctness() == 2)
-                    a.GetComponent<Image>().color = Color.red;
-            } else { 
-                if (a.GetComponent<Anwser>().Correctness() == 3)
-                    a.GetComponent<Image>().color = Color.green;
+                correct = false;
+                if (anwser.Correctness() == PossibleAnwsers.correctNotChosen)
+                {
+                    image.color = Color.green;
+                }
+                if (anwser.Correctness() == PossibleAnwsers.incorrectChosen)
+                {
+                    image.color = Color.red;
+                }
             }
-            a.GetComponent<Button>().enabled = false;
+            else if (anwser.Correctness() == PossibleAnwsers.correctChosen)
+            {
+                    image.color = Color.green;
+            }
+
+            button.enabled = false;
         }
-        // Gdy wszystkie odpowiedzi są zaznaczone poprawnie to zwróci prawdę.
-        // W każdym innym przypadku będzie false.
+
         return correct;
     }
 
-    public bool SimpleCheck()
+    private bool CheckCorrectnessSimple()
     {
         GameObject [] ansList = GameObject.FindGameObjectsWithTag("Anwser");
         bool correct = true;
+
         foreach(GameObject a in ansList)
         {
-            if (a.GetComponent<Anwser>().Correctness() < 3)
+            var anwser = a.GetComponent<Anwser>();
+            if (anwser.IncorrectAnwser())
             {
-                correct = false; // zła odpowiedź
+                correct = false;
             }
         }
         return correct;
@@ -113,9 +131,11 @@ public class Check : MonoBehaviour {
     public void Saving(){
         saving = true;
     }
+
     public void Loading(){
         loading = true;
     }
+
     public void SetText(string text){
         gameObject.GetComponent<LogControl>().Set(text);
     }

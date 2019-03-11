@@ -24,7 +24,7 @@ public class Base : MonoBehaviour
 
         Load.Setup();
         Save.Setup();
-        question.Setup();
+        this.question.Setup();
     }
 
     private void CheckForSave()
@@ -63,8 +63,7 @@ public class Base : MonoBehaviour
 
     private void InitBase()
     {
-        var Q         = Load.ReadPath();
-        var questions = Q.GetLength(0);
+        var Q = Load.ReadPath();
 
         for (int i = 0; i < repetitions; i++)
         {
@@ -103,14 +102,14 @@ public class Base : MonoBehaviour
         }
         else
         {
-            LearningSucceded(); 
+            LearningSucceded();
         }
     }
 
     public void SetQuestion()
     {
-        string read = Load.Read(LastQuestion());
-        this.SetQuestionName();
+        var read = Load.Read(LastQuestion());
+        this.SetQuestionFileName();
         question.InitQuestion(read);
     }
 
@@ -120,7 +119,7 @@ public class Base : MonoBehaviour
         question.SetQuestionValue(text);
         question.ResetQuestionValue();
         check.SetText("Ok!");
-        SetText("fin");
+        this.SetText("fin");
         GameObject.Find("Piwo").GetComponent<Image>().enabled = true;
     }
 
@@ -131,15 +130,13 @@ public class Base : MonoBehaviour
 
     public bool Learned()
     {
-        if (Qs() > 0)
-            return false;
-        return true;
+        return !(Qs() > 0);
     }
 
-    private void SetQuestionName()
+    private void SetQuestionFileName()
     {
         var pathSplited = LastQuestion().Split('/');
-        var fileName    = pathSplited[pathSplited.GetLength(0) - 1];
+        var fileName    = pathSplited[pathSplited.Length - 1];
 
         SetText(fileName);
     }
@@ -155,6 +152,6 @@ public class Base : MonoBehaviour
 
     public int Qs()
     {
-        return baseQ.Count; 
+        return baseQ.Count;
     }
 }
