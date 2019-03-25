@@ -8,6 +8,10 @@ public class Menu : MonoBehaviour {
     {
         Application.LoadLevel("App");
     }
+    public void ExploratorSelect()
+    {
+        Application.LoadLevel("ExploratorSelection");
+    }
     public void Test()
     {
         Application.LoadLevel("Test");
