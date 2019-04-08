@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 public class Base : MonoBehaviour
 {
-    private List<string> baseQ = new List<string>();    // w liście przetrzymuje tyle tablic Q ile mam ustawionych powtórzen
-    private int repetitions = 3;                        // powtórzenia
-    private Question question;                          // obiekt, którym ustawiamy text, przsyłemy pytania etc.
-    private Check check;                                // tekst na guziku 'sprawdz'
+    private List<string> baseQ = new List<string>();
+    private int repetitions = 3;
+    private Question question;
+    private Check check;
 
     void Awake()
     {
@@ -44,15 +44,14 @@ public class Base : MonoBehaviour
 
     public void LoadBase()
     {
-        if (Load.Count() > 0)
+        if (Load.Count() > 0) // TODO: Think about reading from filesystem only once
         {
             InitBase();
             SetQuestion();
         }
         else
         {
-            question.SetQuestionLabel("Brak pytań!\nUmieść bazę pytań w odpowiednim miejscu na swoim urządzeniu.");
-            check.SetText("Ok");
+            question.ErrorOccured("Brak pytań!\nUmieść bazę pytań w odpowiednim miejscu na swoim urządzeniu.");
         }
     }
 

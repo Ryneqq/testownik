@@ -1,28 +1,23 @@
 ﻿using UnityEngine;
 
-/// <BackButton>
-/// Metoda słóży do zczytyania naciśnięć na hardware'owy guzik 'cofnij'
-/// Po double clicku, program powinien zakończyć swoje działanie, ale najpierw zada ostatnie pytanie:
-/// Czy użytkownik chce zapisać aktualny stan? po czym zapisze/niezapisze i wyjdzie
-/// </BackButton>
 public class Quit : MonoBehaviour {
-
-    private bool clicked = false;       // czy został kliknięty przycisk hardware'owy 'back'
-    private bool saving = false;        // czy nacisnieto 2 razy guzik cofinj
-    private float time = 0.0f;          // czas od naklikniecia w/w guzika
-    private float resetTime = 1.3f;     // czas resetu naciśniecia guzika
-    private Question question;          // obiekt 'Question' do wyświetlania komunikatów, interakcji z użytkownikiem
-    private Base b;
+    private bool clicked = false;
+    private bool saving = false;
+    private float time = 0.0f;
+    private float resetTime = 1.3f;
+    private Question question;
+    private Base questionBase;
     private Check check;
 
     void Start()
     {
-        question = GameObject.FindGameObjectWithTag("Question").GetComponent<Question>();   
-        check = GameObject.FindGameObjectWithTag("Check").GetComponent<Check>();
-        b = gameObject.GetComponent<Base>();
+        question        = GameObject.FindGameObjectWithTag("Question").GetComponent<Question>();
+        check           = GameObject.FindGameObjectWithTag("Check").GetComponent<Check>();
+        questionBase    = gameObject.GetComponent<Base>();
     }
+
     void LateUpdate () {
-        if (Input.GetKey(KeyCode.Escape) && !b.Learned())
+        if (Input.GetKey(KeyCode.Escape) && !questionBase.Learned())
         {
             if (!clicked)
             {
@@ -42,7 +37,7 @@ public class Quit : MonoBehaviour {
                 ResetClick();
             }
         }
-        if (Input.GetKey(KeyCode.Escape) && b.Learned()){
+        if (Input.GetKey(KeyCode.Escape) && questionBase.Learned()){
             Application.LoadLevel("Menu");
         }
     }
@@ -53,17 +48,19 @@ public class Quit : MonoBehaviour {
         question.SetQuestionLabel("Naciśnij wstecz by wyjść");
         question.Turn(false);
     }
+
     public void ClickedTwice()
     {
         question.Turn(true);
         question.SetQuestionValue("Czy chcesz zapisać postęp?");
         question.Clear();
-        
+
         GetComponent<Spawn>().SpawnYesNo();
 
         check.Saving();
         check.SetText("Ok");
     }
+
     private void ResetClick()
     {
         time = 0.0f;

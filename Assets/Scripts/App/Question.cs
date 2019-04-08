@@ -30,13 +30,13 @@ public class Question : MonoBehaviour {
         }
     }
 
-    private void SetNumberOfAnwsers(int anwsers) {
-        this.anwsersCount = Mathf.Min(anwsers, 5);
-    }
-
-    private void ErrorOccured(string message) {
+    public void ErrorOccured(string message) {
         SetQuestionLabel(message);
         check.SetText("Ok");
+    }
+
+    private void SetNumberOfAnwsers(int anwsers) {
+        this.anwsersCount = Mathf.Min(anwsers, 5);
     }
 
     public AnserDto[] Randomize(AnserDto[] ans)

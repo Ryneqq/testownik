@@ -14,9 +14,7 @@ public static class Load
 
         Debug.Log("Here: '" + basePath + "', put your folder 'baza' with question inside it");
 
-        // Tu mozna wygenerowac hasha z nazw plikow w celu zabezpieczenia save'a
-
-        // zabezpieczenie przed wczytaniem save'a gdyby zmieniono bazy
+        // TODO: Remove this crapy code...
         int qs = Count();
         if(!PlayerPrefs.HasKey("questions")){
             PlayerPrefs.SetInt("questions", qs);
