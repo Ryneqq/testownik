@@ -1,0 +1,3 @@
+[submodule "testownik-server"]
+	path = testownik-server
+	url = git@github.com:mtumalewicz/testownik-server
