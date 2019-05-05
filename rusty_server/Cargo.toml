@@ -5,4 +5,4 @@ authors = ["Ryneq <p.rynowiecki@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-rocket = "*"
+rocket = "0.4.0"

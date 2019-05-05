@@ -1,8 +1,9 @@
 #![feature(custom_attribute, proc_macro_hygiene, decl_macro)]
 mod routes;
-use rocket;
+#[macro_use] extern crate rocket;
 
 fn main() {
-    println!("Hello, world!");
-    rocket::ignite().mount("/", routes::set_up()).launch();
+    rocket::ignite()
+        .mount("/", routes::set_up())
+        .launch();
 }
