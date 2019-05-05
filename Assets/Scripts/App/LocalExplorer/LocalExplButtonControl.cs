@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class LocalExplButtonControl : MonoBehaviour {
 
@@ -11,6 +13,7 @@ public class LocalExplButtonControl : MonoBehaviour {
     List<GameObject> fileList;
 
     string path;
+    string baseName;
 
     void Start()
 	{
@@ -54,6 +57,43 @@ public class LocalExplButtonControl : MonoBehaviour {
         }
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            path = Application.persistentDataPath + "/QuestionBases/";
+
+            //Clear view:
+            foreach (GameObject file in fileList)
+            {
+                Destroy(file);
+            }
+            fileList.Clear();
+
+            try
+            {
+                string[] fileNames = System.IO.Directory.GetDirectories(path);
+                for (int k = 0; k < fileNames.Length; k++)
+                {
+                    GameObject Butt = Instantiate(fileTemplate) as GameObject;
+
+                    Butt.SetActive(true);
+                    Butt.GetComponent<LocalExplButton>().SetText(fileNames[k]);
+
+                    fileList.Add(Butt);
+
+                    //Set parent of new button that we just created (Butt) to be the child object of 
+                    //fileTemplate
+                    Butt.transform.SetParent(fileTemplate.transform.parent, false);
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.Log(e);
+            }
+        }
+    }
+
     public void ButtonClicked(string fullPath)
     {
         path = fullPath;
@@ -87,4 +127,6 @@ public class LocalExplButtonControl : MonoBehaviour {
             Debug.Log(e);
         }
     }
+
+
 }
