@@ -1,18 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class Load
 {
+    const string LearningBaseKey = "LearningBase";
+
     private static string basePath;        // ścieżka do bazy na androidzie
     private static string savePath;        // ścieżka do pliku z savem
 
     public static void Setup()
     {
-        basePath = Application.persistentDataPath + "/baza/";
+        basePath = PlayerPrefs.GetString(LearningBaseKey);
+
         savePath = Application.persistentDataPath + "/save.txt";
 
         Debug.Log("Here: '" + basePath + "', put your folder 'baza' with question inside it");
+
+        //If the base is not set, then load local bases explorator:
+        if(basePath == "")
+        {
+            SceneManager.LoadScene(6);
+        }
 
         // Tu mozna wygenerowac hasha z nazw plikow w celu zabezpieczenia save'a
 

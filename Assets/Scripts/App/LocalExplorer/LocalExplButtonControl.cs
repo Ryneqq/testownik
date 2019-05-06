@@ -8,7 +8,10 @@ using UnityEngine.SceneManagement;
 
 public class LocalExplButtonControl : MonoBehaviour {
 
-	[SerializeField]
+    const string LearningBaseKey = "LearningBase";
+
+
+    [SerializeField]
 	private GameObject fileTemplate;
 
     List<GameObject> fileList;
@@ -51,6 +54,12 @@ public class LocalExplButtonControl : MonoBehaviour {
                 Butt.SetActive(true);
                 Butt.GetComponent<LocalExplButton>().SetText(fileNames[k]);
 
+                //If there is learning database selected, change button background
+                if (PlayerPrefs.GetString(LearningBaseKey) == fileNames[k])
+                {
+                    Butt.GetComponent<Image>().color = Color.cyan;
+                }
+
                 fileList.Add(Butt);
 
                 //Set parent of new button that we just created (Butt) to be the child object of 
@@ -66,6 +75,8 @@ public class LocalExplButtonControl : MonoBehaviour {
 
     private void Update()
     {
+
+
         if (Input.GetKeyDown(KeyCode.Escape)) //Load bases list
         {
 
@@ -96,6 +107,12 @@ public class LocalExplButtonControl : MonoBehaviour {
 
                         Butt.SetActive(true);
                         Butt.GetComponent<LocalExplButton>().SetText(fileNames[k]);
+
+                        //If there is learning database selected, change button background
+                        if (PlayerPrefs.GetString(LearningBaseKey) == fileNames[k])
+                        {
+                            Butt.GetComponent<Image>().color = Color.cyan;
+                        }
 
                         fileList.Add(Butt);
 
@@ -149,6 +166,12 @@ public class LocalExplButtonControl : MonoBehaviour {
                 Butt.SetActive(true);
                 Butt.GetComponent<LocalExplButton>().SetText(fileNames[k]);
 
+                //If there is learning database selected, change button background
+                if (PlayerPrefs.GetString(LearningBaseKey) == fileNames[k])
+                {
+                    Butt.GetComponent<Image>().color = Color.cyan;
+                }
+
                 fileList.Add(Butt);
 
                 //Set parent of new button that we just created (Butt) to be the child object of 
@@ -159,6 +182,21 @@ public class LocalExplButtonControl : MonoBehaviour {
         catch (System.Exception e)
         {
             Debug.Log(e);
+        }
+    }
+
+    public void UpdateColors(string basePath)
+    {
+        foreach(GameObject Button in fileList)
+        {
+            if (Button.GetComponent<LocalExplButton>().fullFilePath == basePath)
+            {
+                Button.GetComponent<Image>().color = Color.cyan;
+            }
+            else
+            {
+                Button.GetComponent<Image>().color = Color.white;
+            }
         }
     }
 
