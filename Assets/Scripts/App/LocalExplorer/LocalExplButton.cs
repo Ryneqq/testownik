@@ -21,7 +21,7 @@ public class LocalExplButton : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 	public void SetText(string textString)
 	{
         fullFilePath = textString;
-        fileName.text = textString.Remove(0, (Application.persistentDataPath + "/QuestionBases/").Length);
+        fileName.text = textString.Remove(0, (Variables.basePath).Length);
 	}
 
     public void OnPointerDown(PointerEventData eventData)

@@ -15,7 +15,7 @@ public class BaseDto {
         return JsonUtility.ToJson(this);
     }
 
-    public QuestionDto FromJson(string json) {
-        return JsonUtility.FromJson<QuestionDto>(json);
+    public static BaseDto FromJson(string json) {
+        return JsonUtility.FromJson<BaseDto>(json);
     }
 }

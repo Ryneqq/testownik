@@ -19,7 +19,7 @@ public class Question : MonoBehaviour {
         {
             var questionDto = OldFormat.TryParse(read);
 
-            this.SetQuestionValue(questionDto.question);
+            this.SetQuestionValue(questionDto.q);
             this.SetNumberOfAnwsers(questionDto.AnwsersCount());
             this.spawn.SpawnAnwsers(this.Randomize(questionDto.GetAnwsers()));
 

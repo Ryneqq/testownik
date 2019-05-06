@@ -27,7 +27,7 @@ public class LocalExplButtonControl : MonoBehaviour {
         //Create list for buttons storage:
         fileList = new List<GameObject>();
 
-        path = Application.persistentDataPath + "/QuestionBases/";
+        path = Variables.basePath;
 
         if (!System.IO.Directory.Exists(path))
         {
@@ -80,13 +80,13 @@ public class LocalExplButtonControl : MonoBehaviour {
             //Clear question field
             QuestionText.text = "";
 
-            if (path == Application.persistentDataPath + "/QuestionBases/")
+            if (path == Variables.basePath)
             {
                 SceneManager.LoadScene(4); //load Menu scene
             }
             else
             {
-                path = Application.persistentDataPath + "/QuestionBases/";
+                path = Variables.basePath;
 
                 //Clear view:
                 foreach (GameObject file in fileList)

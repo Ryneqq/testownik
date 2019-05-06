@@ -2,16 +2,21 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class RequestControl
+public class RequestControl: MonoBehaviour
 {
-    readonly string url = "some_url";
+    readonly string url = "http://145.239.31.166:8000/bases";
     Requester requester;
     string token;
 
-    RequestControl()
-    {
-        this.requester = new Requester();
+    void Start() {
+        this.requester =  new Requester();
+        this.GetQuestionBase();
     }
+
+    // RequestControl()
+    // {
+    //     this.requester = new Requester();
+    // }
 
     public void Authorize(string username, string passhash)
     {
@@ -21,8 +26,7 @@ public class RequestControl
 
     public void GetQuestionBase()
     {
-        // form list of questions from dto list and save it on the disc
-        // read name
+        StartCoroutine(this.requester.GetRequest(this.url));
     }
 
     public void PostQuestionBase()

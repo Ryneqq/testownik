@@ -4,7 +4,7 @@ using UnityEngine.Networking;
 
 public class Requester {
 
-    IEnumerator PostRequest(string url, string json)
+    public IEnumerator PostRequest(string url, string json)
     {
         var uwr             = new UnityWebRequest(url, "POST");
         byte[] jsonToSend   = new System.Text.UTF8Encoding().GetBytes(json);
@@ -25,18 +25,42 @@ public class Requester {
         }
     }
 
-    IEnumerator GetRequest(string uri)
-    {
-        UnityWebRequest uwr = UnityWebRequest.Get(uri);
-        yield return uwr.SendWebRequest();
+    public IEnumerator GetRequest(string url) {
+        UnityWebRequest www = UnityWebRequest.Get(url);
+        yield return www.SendWebRequest();
 
-        if (uwr.isNetworkError)
-        {
-            Debug.Log("Error While Sending: " + uwr.error);
+        if(www.isNetworkError || www.isHttpError) {
+            Debug.Log(www.error);
+            //handle error
         }
-        else
-        {
-            Debug.Log("Received: " + uwr.downloadHandler.text);
+        else {
+            var json = www.downloadHandler.text;
+            json = json.ToLower(); // TODO: delete
+            var bases = BasesDto.FromJson(json);
+            Debug.Log(bases);
+            Debug.Log(bases.json_dbs[0].name);
+            var path = Application.persistentDataPath + "/" + "remote";
+
+            if (System.IO.Directory.Exists(path)) {
+                System.IO.Directory.Delete(path, true);
+            }
+
+            System.IO.Directory.CreateDirectory(path);
+
+            foreach (var q_base in bases.json_dbs)
+            {
+                var name = 0;
+                var base_path = path + "/" + q_base.name;
+
+
+                System.IO.Directory.CreateDirectory(base_path);
+
+                foreach (var question in q_base.json_db)
+                {
+                    System.IO.File.WriteAllText(base_path + "/" + name + ".txt", question.IntoJson());
+                    name++;
+                }
+            }
         }
     }
 }

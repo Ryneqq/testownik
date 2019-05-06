@@ -6,6 +6,9 @@ public class Variables : MonoBehaviour {
     public static int correct;
     public static int anwsered;
     public static string LearningBaseKey = "LearningBase";
+    public static string basePath = Variables.localBase;
+    public static string localBase = Application.persistentDataPath + "/QuestionBases/";
+    public static string remoteBase = Application.persistentDataPath + "/remote/";
 
     public static void Clear()
     {
