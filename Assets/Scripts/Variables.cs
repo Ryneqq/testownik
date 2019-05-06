@@ -5,6 +5,7 @@ public class Variables : MonoBehaviour {
     public static float studyTime;
     public static int correct;
     public static int anwsered;
+    public static string LearningBaseKey = "LearningBase";
 
     public static void Clear()
     {
