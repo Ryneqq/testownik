@@ -2,11 +2,7 @@
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class Requester : MonoBehaviour {
-
-    void Start () {
-
-    }
+public class Requester {
 
     IEnumerator PostRequest(string url, string json)
     {

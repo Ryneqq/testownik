@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
+[Serializable]
 public class QuestionDto {
     public string question;
     public string[] correct_anwsers;
@@ -31,5 +34,13 @@ public class QuestionDto {
         }
 
         return anwsers.ToArray();
+    }
+
+    public string IntoJson() {
+        return JsonUtility.ToJson(this);
+    }
+
+    public QuestionDto FromJson(string json) {
+        return JsonUtility.FromJson<QuestionDto>(json);
     }
 }
