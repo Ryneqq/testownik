@@ -19,24 +19,32 @@ public class Question : MonoBehaviour {
         {
             var questionDto = OldFormat.TryParse(read);
 
-            this.SetQuestionValue(questionDto.question);
+            this.SetQuestionValue(questionDto.q);
             this.SetNumberOfAnwsers(questionDto.AnwsersCount());
             this.spawn.SpawnAnwsers(this.Randomize(questionDto.GetAnwsers()));
 
         }
         catch (System.FormatException ex)
         {
+            var questionDto = QuestionDto.FromJson(read);
+
+            this.SetQuestionValue(questionDto.q);
+            this.SetNumberOfAnwsers(questionDto.AnwsersCount());
+            this.spawn.SpawnAnwsers(this.Randomize(questionDto.GetAnwsers()));
+        }
+        catch (System.Exception ex)
+        {
             ErrorOccured(ex.Message);
         }
     }
 
-    private void SetNumberOfAnwsers(int anwsers) {
-        this.anwsersCount = Mathf.Min(anwsers, 5);
-    }
-
-    private void ErrorOccured(string message) {
+    public void ErrorOccured(string message) {
         SetQuestionLabel(message);
         check.SetText("Ok");
+    }
+
+    private void SetNumberOfAnwsers(int anwsers) {
+        this.anwsersCount = Mathf.Min(anwsers, 5);
     }
 
     public AnserDto[] Randomize(AnserDto[] ans)

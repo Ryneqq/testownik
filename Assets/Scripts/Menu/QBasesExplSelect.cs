@@ -8,11 +8,13 @@ public class QBasesExplSelect : MonoBehaviour {
 
 	public void LocalBase()
     {
+        Variables.basePath = Variables.localBase;
         Application.LoadLevel("LocalQBExplorator");
     }
-	
+
 	public void RemoteBase()
     {
-        Application.LoadLevel("RemoteQBExplorator");
+        Variables.basePath = Variables.remoteBase;
+        Application.LoadLevel("LocalQBExplorator");
     }
 }

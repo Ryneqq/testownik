@@ -5,14 +5,12 @@ using UnityEngine.SceneManagement;
 
 public static class Load
 {
-    const string LearningBaseKey = "LearningBase";
-
     private static string basePath;        // ścieżka do bazy na androidzie
     private static string savePath;        // ścieżka do pliku z savem
 
     public static void Setup()
     {
-        basePath = PlayerPrefs.GetString(LearningBaseKey);
+        basePath = PlayerPrefs.GetString(Variables.LearningBaseKey);
 
         savePath = Application.persistentDataPath + "/save.txt";
 

@@ -6,7 +6,6 @@ using UnityEngine.EventSystems;
 
 public class LocalExplButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    const string LearningBaseKey = "LearningBase";
 
     [SerializeField]
 	private Text fileName;
@@ -22,7 +21,7 @@ public class LocalExplButton : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 	public void SetText(string textString)
 	{
         fullFilePath = textString;
-        fileName.text = textString.Remove(0, (Application.persistentDataPath + "/QuestionBases/").Length);
+        fileName.text = textString.Remove(0, (Variables.basePath).Length);
 	}
 
     public void OnPointerDown(PointerEventData eventData)
@@ -44,7 +43,7 @@ public class LocalExplButton : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
 
     private void Start()
-    {    
+    {
     }
 
     private void Update()
@@ -57,7 +56,7 @@ public class LocalExplButton : MonoBehaviour, IPointerDownHandler, IPointerUpHan
             if (bottonDownTimer > 100 && fullFilePath.Remove(0, fullFilePath.Length - 4) != ".txt")
             {
                 SSTools.ShowMessage("Wybrano baze do nauki!", SSTools.Position.bottom, SSTools.Time.threeSecond);
-                PlayerPrefs.SetString(LearningBaseKey, fullFilePath);
+                PlayerPrefs.SetString(Variables.LearningBaseKey, fullFilePath);
                 buttonControl.UpdateColors(fullFilePath);
                 Reset();
             }
@@ -69,5 +68,5 @@ public class LocalExplButton : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         buttonDown = false;
         bottonDownTimer = 0;
     }
-    
+
 }

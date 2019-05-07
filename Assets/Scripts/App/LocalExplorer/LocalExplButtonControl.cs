@@ -8,9 +8,6 @@ using UnityEngine.SceneManagement;
 
 public class LocalExplButtonControl : MonoBehaviour {
 
-    const string LearningBaseKey = "LearningBase";
-
-
     [SerializeField]
 	private GameObject fileTemplate;
 
@@ -30,7 +27,7 @@ public class LocalExplButtonControl : MonoBehaviour {
         //Create list for buttons storage:
         fileList = new List<GameObject>();
 
-        path = Application.persistentDataPath + "/QuestionBases/";
+        path = Variables.basePath;
 
         if (!System.IO.Directory.Exists(path))
         {
@@ -50,19 +47,19 @@ public class LocalExplButtonControl : MonoBehaviour {
             for (int k = 0; k < fileNames.Length; k++)
             {
                 GameObject Butt = Instantiate(fileTemplate) as GameObject;
-                
+
                 Butt.SetActive(true);
                 Butt.GetComponent<LocalExplButton>().SetText(fileNames[k]);
 
                 //If there is learning database selected, change button background
-                if (PlayerPrefs.GetString(LearningBaseKey) == fileNames[k])
+                if (PlayerPrefs.GetString(Variables.LearningBaseKey) == fileNames[k])
                 {
                     Butt.GetComponent<Image>().color = Color.cyan;
                 }
 
                 fileList.Add(Butt);
 
-                //Set parent of new button that we just created (Butt) to be the child object of 
+                //Set parent of new button that we just created (Butt) to be the child object of
                 //fileTemplate
                 Butt.transform.SetParent(fileTemplate.transform.parent, false);
             }
@@ -83,13 +80,13 @@ public class LocalExplButtonControl : MonoBehaviour {
             //Clear question field
             QuestionText.text = "";
 
-            if (path == Application.persistentDataPath + "/QuestionBases/")
+            if (path == Variables.basePath)
             {
                 SceneManager.LoadScene(4); //load Menu scene
             }
             else
             {
-                path = Application.persistentDataPath + "/QuestionBases/";
+                path = Variables.basePath;
 
                 //Clear view:
                 foreach (GameObject file in fileList)
@@ -109,14 +106,14 @@ public class LocalExplButtonControl : MonoBehaviour {
                         Butt.GetComponent<LocalExplButton>().SetText(fileNames[k]);
 
                         //If there is learning database selected, change button background
-                        if (PlayerPrefs.GetString(LearningBaseKey) == fileNames[k])
+                        if (PlayerPrefs.GetString(Variables.LearningBaseKey) == fileNames[k])
                         {
                             Butt.GetComponent<Image>().color = Color.cyan;
                         }
 
                         fileList.Add(Butt);
 
-                        //Set parent of new button that we just created (Butt) to be the child object of 
+                        //Set parent of new button that we just created (Butt) to be the child object of
                         //fileTemplate
                         Butt.transform.SetParent(fileTemplate.transform.parent, false);
                     }
@@ -132,7 +129,7 @@ public class LocalExplButtonControl : MonoBehaviour {
 
     public void ButtonClicked(string fullPath)
     {
-        //Check if user want to view question 
+        //Check if user want to view question
         if (fullPath.Remove(0, fullPath.Length - 4) == ".txt")
         {
             //Destroy all the elements
@@ -167,14 +164,14 @@ public class LocalExplButtonControl : MonoBehaviour {
                 Butt.GetComponent<LocalExplButton>().SetText(fileNames[k]);
 
                 //If there is learning database selected, change button background
-                if (PlayerPrefs.GetString(LearningBaseKey) == fileNames[k])
+                if (PlayerPrefs.GetString(Variables.LearningBaseKey) == fileNames[k])
                 {
                     Butt.GetComponent<Image>().color = Color.cyan;
                 }
 
                 fileList.Add(Butt);
 
-                //Set parent of new button that we just created (Butt) to be the child object of 
+                //Set parent of new button that we just created (Butt) to be the child object of
                 //fileTemplate
                 Butt.transform.SetParent(fileTemplate.transform.parent, false);
             }
