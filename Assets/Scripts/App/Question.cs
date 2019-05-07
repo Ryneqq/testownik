@@ -26,6 +26,14 @@ public class Question : MonoBehaviour {
         }
         catch (System.FormatException ex)
         {
+            var questionDto = QuestionDto.FromJson(read);
+
+            this.SetQuestionValue(questionDto.q);
+            this.SetNumberOfAnwsers(questionDto.AnwsersCount());
+            this.spawn.SpawnAnwsers(this.Randomize(questionDto.GetAnwsers()));
+        }
+        catch (System.Exception ex)
+        {
             ErrorOccured(ex.Message);
         }
     }
