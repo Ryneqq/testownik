@@ -17,13 +17,11 @@ public class LocalExplButtonControl : MonoBehaviour {
     string baseName;
     Text QuestionText = null;
 
-
     void Start()
 	{
         //Set text:
         Transform child = transform.Find("QuestionView");
         QuestionText = child.GetComponent<Text>();
-
         //Create list for buttons storage:
         fileList = new List<GameObject>();
 
@@ -68,7 +66,20 @@ public class LocalExplButtonControl : MonoBehaviour {
         {
             Debug.Log(e);
         }
+
     }
+
+    public void onAddQuestionClicked()
+    {
+        Application.LoadLevel("AddQuestion");
+    }
+
+    public void onAddBaseClicked()
+    {
+        Application.LoadLevel("AddQuestion");
+    }
+
+
 
     private void Update()
     {
