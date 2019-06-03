@@ -17,8 +17,6 @@ public class LocalExplButtonControl : MonoBehaviour {
     string baseName;
     Text QuestionText = null;
 
-    InputField newBaseName = this.
-
     void Start()
 	{
         //Set text:
