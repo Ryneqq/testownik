@@ -26,6 +26,8 @@ public class AddQuestionControl : MonoBehaviour {
         int newQuestionNameInt = -1;
         string newQuestionName;
 
+        string content = "";
+
         //Create correct answers code:
         for (int i=0;i<6;i++)
         {
@@ -55,20 +57,21 @@ public class AddQuestionControl : MonoBehaviour {
         newQuestionNameInt += 1;
         newQuestionName = selectedDataBase + "/" + newQuestionNameInt + ".txt";
 
-        //Save question file:
-        System.IO.File.WriteAllText(newQuestionName, correctAnswersCode);
-        System.IO.File.AppendAllText(newQuestionName, "\r\n");
-        System.IO.File.AppendAllText(newQuestionName, question.text);
-    
+        //Fill content of question:
+        content += correctAnswersCode;
+        content += "\r\n";
+        content += question.text;
+
         for (int i = 0; i < answers.Length; i++)
         {
             if (answers[i].text != "")
             {
-                System.IO.File.AppendAllText(newQuestionName, "\r\n");
-                System.IO.File.AppendAllText(newQuestionName, answers[i].text);
+                content += "\r\n";
+                content += answers[i].text;
             }
         }
 
+        System.IO.File.WriteAllText(newQuestionName, OldFormat.TryParse(content).IntoJson());
         Application.LoadLevel("LocalQBExplorator");
     }
 

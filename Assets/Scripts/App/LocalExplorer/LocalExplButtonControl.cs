@@ -17,6 +17,8 @@ public class LocalExplButtonControl : MonoBehaviour {
     string baseName;
     Text QuestionText = null;
 
+    InputField newBaseName = this.
+
     void Start()
 	{
         //Set text:
@@ -73,6 +75,13 @@ public class LocalExplButtonControl : MonoBehaviour {
     {
         Application.LoadLevel("AddQuestion");
     }
+
+    public void onAddBaseClicked()
+    {
+        Application.LoadLevel("AddQuestion");
+    }
+
+
 
     private void Update()
     {
