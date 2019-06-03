@@ -62,7 +62,7 @@ public class Base : MonoBehaviour
 
     private void InitBase()
     {
-        var Q = Load.ReadPath();
+        var Q = Load.ReadBase();
 
         for (int i = 0; i < repetitions; i++)
         {

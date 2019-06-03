@@ -17,16 +17,7 @@ public class Question : MonoBehaviour {
     {
         try
         {
-            var questionDto = OldFormat.TryParse(read);
-
-            this.SetQuestionValue(questionDto.q);
-            this.SetNumberOfAnwsers(questionDto.AnwsersCount());
-            this.spawn.SpawnAnwsers(this.Randomize(questionDto.GetAnwsers()));
-
-        }
-        catch (System.FormatException ex)
-        {
-            var questionDto = QuestionDto.FromJson(read);
+            var questionDto = QuestionDto.FromString(read);
 
             this.SetQuestionValue(questionDto.q);
             this.SetNumberOfAnwsers(questionDto.AnwsersCount());

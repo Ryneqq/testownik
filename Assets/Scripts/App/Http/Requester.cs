@@ -37,8 +37,6 @@ public class Requester {
             var json = www.downloadHandler.text;
             json = json.ToLower(); // TODO: delete
             var bases = BasesDto.FromJson(json);
-            Debug.Log(bases);
-            Debug.Log(bases.json_dbs[0].name);
             var path = Application.persistentDataPath + "/" + "remote";
 
             if (System.IO.Directory.Exists(path)) {

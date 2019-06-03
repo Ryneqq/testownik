@@ -43,4 +43,15 @@ public class QuestionDto {
     public static QuestionDto FromJson(string json) {
         return JsonUtility.FromJson<QuestionDto>(json);
     }
+
+    public static QuestionDto FromString(string str) {
+        try
+        {
+            return OldFormat.TryParse(str);
+        }
+        catch (System.FormatException ex)
+        {
+            return QuestionDto.FromJson(str);
+        }
+    }
 }

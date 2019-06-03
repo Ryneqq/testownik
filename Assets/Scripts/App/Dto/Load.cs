@@ -53,9 +53,19 @@ public static class Load
         return string.Empty;
     }
 
-    public static string[] ReadPath()
+    public static string[] ReadBase()
     {
-        return System.IO.Directory.GetFiles(basePath);
+        return ReadFiles(basePath);
+    }
+
+    public static string[] ReadFiles(string path)
+    {
+        return System.IO.Directory.GetFiles(path);
+    }
+
+    public static string[] ReadDirectories(string path)
+    {
+        return System.IO.Directory.GetDirectories(path);
     }
 
     private static void DeleteSave(){
