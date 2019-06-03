@@ -31,7 +31,6 @@ public class LocalExplButton : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        Debug.Log("OnPointerUp for: " + bottonDownTimer);
 
         //Normal click: go forward
         if (bottonDownTimer < 100 && buttonDown)
