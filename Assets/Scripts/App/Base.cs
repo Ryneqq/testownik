@@ -1,51 +1,43 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Linq;
 
-public class Base : MonoBehaviour
-{
-    private List<string> baseQ = new List<string>();
+public class Base : MonoBehaviour {
+    private List<string> qBase = new List<string>();
     private int repetitions = 3;
     private Question question;
     private Check check;
 
-    void Awake()
-    {
+    void Awake() {
         this.Setup();
         this.CheckForSave();
     }
 
-    private void Setup()
-    {
+    private void Setup() {
         Variables.Clear();
 
-        this.question    = GameObject.FindGameObjectWithTag("Question").GetComponent<Question>();
-        this.check       = GameObject.FindGameObjectWithTag("Check").GetComponent<Check>();
+        this.question = GameObject.FindGameObjectWithTag("Question").GetComponent<Question>();
+        this.check = GameObject.FindGameObjectWithTag("Check").GetComponent<Check>();
 
         Load.Setup();
         Save.Setup();
         this.question.Setup();
     }
 
-    private void CheckForSave()
-    {
-        if(Load.CheckForSave())
-        {
+    private void CheckForSave() {
+        if (Load.CheckForSave()) {
             question.SetQuestionValue("Czy chcesz wczytać zapis?");
             check.SetText("Ok");
             check.Loading();
             GetComponent<Spawn>().SpawnYesNo();
-        }
-        else
-        {
+        } else {
             LoadBase();
         }
     }
 
-    public void LoadBase()
-    {
-        if (Load.Count() > 0) // TODO: Think about reading from filesystem only once
-        {
+    public void LoadBase() {
+        if (Load.Count() > 0) {
             InitBase();
             SetQuestion();
         }
@@ -55,65 +47,54 @@ public class Base : MonoBehaviour
         }
     }
 
-    public void LoadBase(List<string> b)
-    {
-        baseQ = b;
+    public void LoadBase(List<string> qBase) {
+        this.qBase = qBase;
     }
 
-    private void InitBase()
-    {
-        var Q = Load.ReadBase();
+    private void InitBase() {
+        var readBase = Load.ReadBase();
+        var repetitions = Enumerable.Range(0, this.repetitions);
 
-        for (int i = 0; i < repetitions; i++)
-        {
-            this.baseQ.AddRange(new List<string>(SetQueue(Q)));
+        foreach (var i in repetitions) {
+            var queue = new List<string>(SetQueue(readBase));
+            this.qBase.AddRange(queue);
         }
     }
 
-    private string [] SetQueue(string[] Q)
-    {
-        int questions = Q.Length;
-        int rand;
-        string temp;
+    private string [] SetQueue(string[] qBase) {
+        var questions = Enumerable.Range(0, qBase.Length - 1);
 
-        for (int i = 0; i < questions - 1; i++){
-            rand = Random.Range(i, questions);
-            temp = Q[i];
-            Q[i] = Q[rand];
-            Q[rand] = temp;
+        foreach (var i in questions) {
+            var rand = Random.Range(i, qBase.Length);
+            var temp = qBase[i];
+            qBase[i] = qBase[rand];
+            qBase[rand] = temp;
         }
 
-        return Q;
+        return qBase;
     }
 
-    public void SaveBase()
-    {
-        Save.SaveProgress(baseQ);
+    public void SaveBase() {
+        Save.SaveProgress(this.qBase);
     }
 
-    public void NewQuestion()
-    {
+    public void NewQuestion() {
         question.Clear();
 
-        if (!Learned())
-        {
+        if (!Learned()) {
             SetQuestion();
-        }
-        else
-        {
+        } else {
             LearningSucceded();
         }
     }
 
-    public void SetQuestion()
-    {
+    public void SetQuestion() {
         var read = Load.Read(LastQuestion());
         this.SetQuestionFileName();
         question.InitQuestion(read);
     }
 
-    private void LearningSucceded()
-    {
+    private void LearningSucceded() {
         string text = "Wszystkie pytania zostały opanowane";
         question.SetQuestionValue(text);
         question.ResetQuestionValue();
@@ -122,35 +103,29 @@ public class Base : MonoBehaviour
         GameObject.Find("Piwo").GetComponent<Image>().enabled = true;
     }
 
-    public void RemoveQuestion()
-    {
-        baseQ.RemoveAt(Qs() - 1);
+    public void RemoveQuestion() {
+        this.qBase.RemoveAt(Qs() - 1);
     }
 
-    public bool Learned()
-    {
+    public bool Learned() {
         return !(Qs() > 0);
     }
 
-    private void SetQuestionFileName()
-    {
+    private void SetQuestionFileName() {
         var pathSplited = LastQuestion().Split('/');
-        var fileName    = pathSplited[pathSplited.Length - 1];
+        var fileName = pathSplited[pathSplited.Length - 1];
 
         SetText(fileName);
     }
-    public void SetText(string s)
-    {
+    public void SetText(string s) {
         gameObject.GetComponent<LogControl>().Set(s);
     }
 
-    public string LastQuestion()
-    {
-        return baseQ[Qs() - 1];
+    public string LastQuestion() {
+        return this.qBase[Qs() - 1];
     }
 
-    public int Qs()
-    {
-        return baseQ.Count;
+    public int Qs() {
+        return this.qBase.Count;
     }
 }

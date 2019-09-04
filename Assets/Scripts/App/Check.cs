@@ -18,14 +18,13 @@ public class Check : MonoBehaviour {
 
     public void Clicked()
     {
-        if(this.loading || this.saving) {
+        if (this.loading || this.saving) {
             CheckYesNo();
             return;
         }
 
         if (!this.anwsered) {
-            if(baseObj.Learned())
-            {
+            if (baseObj.Learned()) {
                 Application.LoadLevel("Menu");
             } else {
                 this.anwsered = true;
@@ -38,10 +37,8 @@ public class Check : MonoBehaviour {
             this.anwsered = false;
         }
     }
-    public void CheckAnwsers()
-    {
-        if (CheckCorectness())
-        {
+    public void CheckAnwsers() {
+        if (CheckCorectness()) {
             Variables.correct++;
             this.baseObj.RemoveQuestion();
         }
@@ -50,24 +47,17 @@ public class Check : MonoBehaviour {
         this.progress.CountPercentage();
     }
 
-    private void CheckYesNo(){
-         if(this.saving)
-         {
-            if (CheckCorrectnessSimple())
-            {
+    private void CheckYesNo() {
+         if (this.saving) {
+            if (CheckCorrectnessSimple()) {
                 baseObj.SaveBase();
             }
 
             Application.LoadLevel("Menu");
-        }
-        else
-        {
-            if(CheckCorrectnessSimple())
-            {
+        } else {
+            if (CheckCorrectnessSimple()) {
                 baseObj.LoadBase(Load.LoadSave());
-            }
-            else
-            {
+            } else {
                 baseObj.LoadBase();
             }
 
@@ -78,31 +68,25 @@ public class Check : MonoBehaviour {
         }
     }
 
-    private bool CheckCorectness()
-    {
+    private bool CheckCorectness() {
         GameObject [] ansList = GameObject.FindGameObjectsWithTag("Anwser");
         bool correct = true;
 
-        foreach(GameObject a in ansList)
-        {
+        foreach(GameObject a in ansList) {
             var anwser = a.GetComponent<Anwser>();
             var image  = a.GetComponent<Image>();
             var button = a.GetComponent<Button>();
 
-            if (anwser.IncorrectAnwser())
-            {
+            if (anwser.IncorrectAnwser()) {
                 correct = false;
-                if (anwser.Correctness() == PossibleAnwsers.correctNotChosen)
-                {
+                if (anwser.Correctness() == PossibleAnwsers.correctNotChosen) {
                     image.color = Color.green;
                 }
-                if (anwser.Correctness() == PossibleAnwsers.incorrectChosen)
-                {
+                if (anwser.Correctness() == PossibleAnwsers.incorrectChosen) {
                     image.color = Color.red;
                 }
             }
-            else if (anwser.Correctness() == PossibleAnwsers.correctChosen)
-            {
+            else if (anwser.Correctness() == PossibleAnwsers.correctChosen) {
                     image.color = Color.green;
             }
 
