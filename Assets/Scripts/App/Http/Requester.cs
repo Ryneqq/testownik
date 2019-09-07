@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 public class Requester {
-
     public IEnumerator PostRequest(string url, string json)
     {
         var uwr             = new UnityWebRequest(url, "POST");
@@ -11,7 +10,7 @@ public class Requester {
         uwr.uploadHandler   = (UploadHandler)new UploadHandlerRaw(jsonToSend);
         uwr.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
         uwr.SetRequestHeader("Content-Type", "application/json");
-
+        Variables.sending = true;
         //Send the request then wait here until it returns
         yield return uwr.SendWebRequest();
 
@@ -23,10 +22,13 @@ public class Requester {
         {
             Debug.Log("Received: " + uwr.downloadHandler.text);
         }
+
+        Variables.sending = false;
     }
 
     public IEnumerator GetRequest(string url) {
         UnityWebRequest www = UnityWebRequest.Get(url);
+        Variables.recieving = true;
         yield return www.SendWebRequest();
 
         if(www.isNetworkError || www.isHttpError) {
@@ -60,5 +62,7 @@ public class Requester {
                 }
             }
         }
+
+        Variables.recieving = false;
     }
 }

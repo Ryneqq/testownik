@@ -5,6 +5,8 @@ public class Variables : MonoBehaviour {
     public static float studyTime;
     public static int correct;
     public static int anwsered;
+    public static bool sending = false;
+    public static bool recieving = false;
     public static string LearningBaseKey = "LearningBase";
     public static string basePath = Variables.localBase;
     public static string localBase = Application.persistentDataPath + "/QuestionBases/";

@@ -7,6 +7,27 @@ public static class OldFormat {
     const string ERROR_MESSAGE_WRONG_FORMAT             = "Uwaga!\nPytanie powinno zaczynać się od 'X'.\nZobacz jak tworzyć pytania w zakładce 'Pomoc'.";
     const string ERROR_MESSAGE_WRONG_NUMBER_OF_ANWSERS  = "Uwaga!\nZła ilość pytań.\nZobacz jak tworzyć pytania w zakładce 'Pomoc'.";
 
+    public static string QuestionDtoToOldFormat (QuestionDto dto) {
+        var newLine = "\r\n";
+        var header = "X";
+        var correct_anwsers = string.Empty;
+        var incorrect_anwsers = string.Empty;
+
+        foreach (var item in dto.ca) {
+            header = string.Concat(header, "1");
+            correct_anwsers = string.Concat(correct_anwsers, item, newLine);
+        }
+        foreach (var item in dto.wa) {
+            header = string.Concat(header, "0");
+            incorrect_anwsers = string.Concat(incorrect_anwsers, item, newLine);
+        }
+
+        return string.Concat(
+            header, newLine,
+            dto.q, newLine,
+            correct_anwsers,
+            incorrect_anwsers);
+    }
     public static QuestionDto TryParse(string read) {
         var lines = OldFormat.RemoveTrailingNewLines(read.Split('\n'));
 
@@ -53,7 +74,7 @@ public static class OldFormat {
         var lines_list = new List<string>();
         var temp_line  = string.Empty;
 
-        foreach (var line in lines) 
+        foreach (var line in lines)
         {
             temp_line = line.Trim();
             if (temp_line != string.Empty)

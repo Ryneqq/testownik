@@ -81,25 +81,9 @@ public static class Load
         return false;
     }
 
-    private static List<string> StringToList(string read)
-    {
-        List<string> baseQ = new List<string>();
-        string[] contents = read.Split('|');
-        for(int i = 0; i < contents.Length; i++)
-        {
-            baseQ.Add(contents[i]);
-        }
-        return baseQ;
-    }
-
-    public static List<string> LoadSave()
-    {
-        List<string> baseQ = new List<string>();
+    public static QuestionDto[] LoadSave() {
         string read = System.IO.File.ReadAllText(savePath);
-        if (read != null)
-        {
-            baseQ = StringToList(read);
-        }
-        return baseQ;
+
+        return BaseDto.FromJson(read).json_db;
     }
 }
